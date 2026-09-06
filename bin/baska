@@ -22,6 +22,10 @@ if len(args) >= 2 and args[0] in COMMANDS and args[1] in ("--help", "-h"):
     show_help(args[0])
     raise SystemExit(0)
 
+if args and args[0] in ("upgrade", "self-update"):
+    from baska_self_update import cli
+    raise SystemExit(cli(args[1:]))
+
 from baska_tui_v2 import main
 
 if __name__ == "__main__":
