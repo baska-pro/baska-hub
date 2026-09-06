@@ -13,7 +13,7 @@ jobs:
       - name: Syntax checks
         run: |
           sh -n install.sh
-          python3 -m py_compile bin/baska baska_tui_v2.py baska_core_v2.py scripts/sync_repositories.py scripts/audit_catalog.py
+          python3 -m py_compile bin/baska baska_help.py baska_tui_v2.py baska_core_v2.py scripts/sync_repositories.py scripts/audit_catalog.py
           find recipes -type f -name '*.sh' -print0 | xargs -0 -r -n1 sh -n
       - name: JSON checks
         run: |
@@ -38,7 +38,26 @@ jobs:
           assert {r['id'] for r in rows}==set(ids)
           print(f'OK: {len(packages)} public packages')
           PY
+      - name: Public metadata checks
+        run: |
+          test -f LICENSE
+          test -f SECURITY.md
+          test -f CONTRIBUTING.md
+          test -f .github/ISSUE_TEMPLATE/bug_report.yml
+          test -f .github/ISSUE_TEMPLATE/feature_request.yml
+          test -f .github/pull_request_template.md
+          python3 - <<'PY'
+          import pathlib,tomllib
+          meta=tomllib.loads(pathlib.Path('pyproject.toml').read_text())['project']
+          assert meta['name']=='baska'
+          assert meta['license']=='MIT'
+          assert meta['version']
+          print('Package metadata OK:',meta['version'])
+          PY
       - name: CLI smoke test
         run: |
           python3 bin/baska version
+          python3 bin/baska --help >/dev/null
+          python3 bin/baska help install >/dev/null
+          python3 bin/baska install --help >/dev/null
           BASKA_HOME="$RUNNER_TEMP/baska-test" python3 bin/baska doctor
