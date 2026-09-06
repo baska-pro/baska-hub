@@ -668,8 +668,8 @@
         "all"
       ],
       "source": "https://github.com/baska-pro/terminal-explorer.git",
-      "action": "smart",
-      "recipe": null,
+      "action": "recipe:recipes/shell-installer.sh",
+      "recipe": "recipes/shell-installer.sh",
       "sha256": null,
       "description": "Interactive terminal file manager built with Bash + fzf for Termux and Linux, featuring previews, search, bookmarks, clipboard, archives, and safe file operations.",
       "visibility": "public",
@@ -739,8 +739,8 @@
         "all"
       ],
       "source": "https://github.com/baska-pro/bersihin.git",
-      "action": "smart",
-      "recipe": null,
+      "action": "recipe:recipes/shell-installer.sh",
+      "recipe": "recipes/shell-installer.sh",
       "sha256": null,
       "description": "Safe cross-platform cleaner for Windows, Linux, Termux, WSL and macOS with automatic platform detection, dry-run, developer cache cleanup and secure install/update tools.",
       "visibility": "public",
