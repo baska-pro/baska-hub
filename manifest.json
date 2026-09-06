@@ -6,7 +6,7 @@
   "default_branch": "main",
   "cli": {
     "name": "baska",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "path": "bin/baska"
   },
   "registry": {
