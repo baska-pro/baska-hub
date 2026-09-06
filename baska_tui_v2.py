@@ -81,7 +81,7 @@ def menu(stdscr, title, items, subtitle=""):
             attr = curses.A_REVERSE | curses.A_BOLD if actual == idx else 0
             safe(stdscr, top + row, 1, " " * max(1, w - 2), attr)
             safe(stdscr, top + row, 2, ("› " if actual == idx else "  ") + label, attr)
-        safe(stdscr, h - 1, 1, "↑↓ pilih  Enter buka  Esc/q kembali", curses.A_DIM)
+        safe(stdscr, h - 1, 1, "↑↓ pilih  Enter buka  Esc/q kembali  Ctrl+C keluar", curses.A_DIM)
         stdscr.refresh()
         ch = stdscr.getch()
         if ch in (curses.KEY_UP, ord('k')): idx = (idx - 1) % len(items)
@@ -128,14 +128,25 @@ def confirm(stdscr, text):
 
 
 def external(stdscr, args):
-    curses.def_prog_mode(); curses.endwin()
-    print()
-    rc = run_cli(args)
-    print()
-    try: input("Enter untuk kembali ke BASKA...")
-    except Exception: pass
-    curses.reset_prog_mode(); stdscr.refresh()
-    return rc
+    curses.def_prog_mode()
+    curses.endwin()
+    try:
+        print()
+        rc = run_cli(args)
+        print()
+        try:
+            input("Enter untuk kembali ke BASKA...")
+        except EOFError:
+            pass
+        return rc
+    finally:
+        # Selalu pulihkan mode curses, termasuk bila pengguna menekan Ctrl+C
+        # ketika command/subprocess atau prompt "Enter untuk kembali" aktif.
+        try:
+            curses.reset_prog_mode()
+            stdscr.refresh()
+        except Exception:
+            pass
 
 
 def browser(stdscr):
@@ -226,16 +237,38 @@ def simple():
         elif c=="0": return
 
 
+def _print_interrupt(message="BASKA ditutup."):
+    # curses.wrapper sudah mengembalikan terminal ke mode normal sebelum
+    # KeyboardInterrupt diteruskan ke sini.
+    try:
+        print(f"\n{message}")
+    except Exception:
+        pass
+
+
 def main():
     args=sys.argv[1:]
     if args and args[0] in ("version","--version","-v"):
         print(VERSION); return
     if args:
-        raise SystemExit(run_cli(args))
-    try: curses.wrapper(dashboard)
+        try:
+            rc = run_cli(args)
+        except KeyboardInterrupt:
+            _print_interrupt("Dibatalkan oleh pengguna.")
+            raise SystemExit(130)
+        raise SystemExit(rc)
+    try:
+        curses.wrapper(dashboard)
+    except KeyboardInterrupt:
+        _print_interrupt()
+        return
     except Exception as exc:
         print(f"TUI tidak tersedia ({exc}); menggunakan mode sederhana.")
-        simple()
+        try:
+            simple()
+        except KeyboardInterrupt:
+            _print_interrupt()
+            return
 
 
 if __name__ == "__main__":
