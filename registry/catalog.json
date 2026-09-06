@@ -2,22 +2,987 @@
   "schema_version": 3,
   "name": "BASKA Hub Catalog",
   "owner": "baska-pro",
-  "generated_at": "2026-09-06T00:00:00Z",
+  "generated_at": "2026-09-06T02:28:36Z",
   "private_policy": "Private repositories are never stored in this public catalog; they are discovered locally by `baska init`.",
   "packages": [
-    {"id":"50000","slug":"web-print-app","aliases":["webprintapp"],"name":"web-print-app","category":"repositories","type":"repo","version":"repo","platforms":["windows"],"architectures":["all"],"source":"https://github.com/baska-pro/web-print-app.git","action":"smart","recipe":null,"sha256":null,"description":"Public repository baska-pro/web-print-app.","visibility":"public","trust":"reviewed","status":"discovered","repository_id":1354456051,"created_at":"2026-09-02T07:18:16Z","updated_at":null,"pushed_at":null,"language":null,"tags":["windows","printing","printer","webapp"],"dependencies":["git"],"installer_indicators":[],"default_branch":"main","latest_release":null,"preferred_delivery":"git","homepage":null,"archived":false},
-    {"id":"49999","slug":"dhs-app","aliases":["dhsapp"],"name":"dhs-app","category":"repositories","type":"repo","version":"repo","platforms":["all"],"architectures":["all"],"source":"https://github.com/baska-pro/dhs-app.git","action":"smart","recipe":null,"sha256":null,"description":"Public repository baska-pro/dhs-app.","visibility":"public","trust":"reviewed","status":"discovered","repository_id":1353373231,"created_at":"2026-09-01T09:20:48Z","updated_at":null,"pushed_at":null,"language":null,"tags":[],"dependencies":["git"],"installer_indicators":[],"default_branch":"main","latest_release":null,"preferred_delivery":"git","homepage":null,"archived":false},
-    {"id":"49998","slug":"griya-kas","aliases":["griyakas"],"name":"griya-kas","category":"repositories","type":"repo","version":"repo","platforms":["all"],"architectures":["all"],"source":"https://github.com/baska-pro/griya-kas.git","action":"smart","recipe":null,"sha256":null,"description":"Public repository baska-pro/griya-kas.","visibility":"public","trust":"reviewed","status":"discovered","repository_id":1352148450,"created_at":null,"updated_at":null,"pushed_at":null,"language":null,"tags":[],"dependencies":["git"],"installer_indicators":[],"default_branch":"main","latest_release":null,"preferred_delivery":"git","homepage":null,"archived":false},
-    {"id":"49997","slug":"script-note","aliases":["scriptnote"],"name":"script-note","category":"repositories","type":"repo","version":"repo","platforms":["all"],"architectures":["all"],"source":"https://github.com/baska-pro/script-note.git","action":"smart","recipe":null,"sha256":null,"description":"Public repository baska-pro/script-note.","visibility":"public","trust":"reviewed","status":"discovered","repository_id":1352068662,"created_at":null,"updated_at":null,"pushed_at":null,"language":null,"tags":[],"dependencies":["git"],"installer_indicators":[],"default_branch":"main","latest_release":null,"preferred_delivery":"git","homepage":null,"archived":false},
-    {"id":"49996","slug":"remotepc-pro","aliases":["remotepcpro"],"name":"remotepc-pro","category":"repositories","type":"repo","version":"repo","platforms":["windows"],"architectures":["all"],"source":"https://github.com/baska-pro/remotepc-pro.git","action":"smart","recipe":null,"sha256":null,"description":"Public repository baska-pro/remotepc-pro.","visibility":"public","trust":"reviewed","status":"discovered","repository_id":1352034396,"created_at":null,"updated_at":null,"pushed_at":null,"language":null,"tags":["windows","remote-desktop"],"dependencies":["git"],"installer_indicators":[],"default_branch":"main","latest_release":null,"preferred_delivery":"git","homepage":null,"archived":false},
-    {"id":"49995","slug":"windows-app-locker","aliases":["windowsapplocker"],"name":"windows-app-locker","category":"repositories","type":"repo","version":"repo","platforms":["windows"],"architectures":["all"],"source":"https://github.com/baska-pro/windows-app-locker.git","action":"smart","recipe":null,"sha256":null,"description":"Public repository baska-pro/windows-app-locker.","visibility":"public","trust":"reviewed","status":"discovered","repository_id":1351971401,"created_at":null,"updated_at":null,"pushed_at":null,"language":null,"tags":["windows","security","app-locker"],"dependencies":["git"],"installer_indicators":[],"default_branch":"main","latest_release":null,"preferred_delivery":"git","homepage":null,"archived":false},
-    {"id":"49994","slug":"remotedroid-control","aliases":["remotedroidcontrol"],"name":"remotedroid-control","category":"repositories","type":"repo","version":"repo","platforms":["all"],"architectures":["all"],"source":"https://github.com/baska-pro/remotedroid-control.git","action":"smart","recipe":null,"sha256":null,"description":"Public repository baska-pro/remotedroid-control.","visibility":"public","trust":"reviewed","status":"discovered","repository_id":1351157599,"created_at":null,"updated_at":null,"pushed_at":null,"language":null,"tags":[],"dependencies":["git"],"installer_indicators":[],"default_branch":"main","latest_release":null,"preferred_delivery":"git","homepage":null,"archived":false},
-    {"id":"49993","slug":"siskamling-digital","aliases":["siskamlingdigital"],"name":"siskamling-digital","category":"repositories","type":"repo","version":"repo","platforms":["all"],"architectures":["all"],"source":"https://github.com/baska-pro/siskamling-digital.git","action":"smart","recipe":null,"sha256":null,"description":"Public repository baska-pro/siskamling-digital.","visibility":"public","trust":"reviewed","status":"discovered","repository_id":1351117057,"created_at":null,"updated_at":null,"pushed_at":null,"language":null,"tags":[],"dependencies":["git"],"installer_indicators":[],"default_branch":"main","latest_release":null,"preferred_delivery":"git","homepage":null,"archived":false},
-    {"id":"49992","slug":"terminal-explorer","aliases":["terminalexplorer"],"name":"terminal-explorer","category":"repositories","type":"repo","version":"repo","platforms":["all"],"architectures":["all"],"source":"https://github.com/baska-pro/terminal-explorer.git","action":"smart","recipe":null,"sha256":null,"description":"Public repository baska-pro/terminal-explorer.","visibility":"public","trust":"reviewed","status":"discovered","repository_id":1350156436,"created_at":null,"updated_at":null,"pushed_at":null,"language":null,"tags":[],"dependencies":["git"],"installer_indicators":[],"default_branch":"main","latest_release":null,"preferred_delivery":"git","homepage":null,"archived":false},
-    {"id":"49991","slug":"bersihin","aliases":["bersihin"],"name":"bersihin","category":"repositories","type":"repo","version":"repo","platforms":["all"],"architectures":["all"],"source":"https://github.com/baska-pro/bersihin.git","action":"smart","recipe":null,"sha256":null,"description":"Public repository baska-pro/bersihin.","visibility":"public","trust":"reviewed","status":"discovered","repository_id":1349346037,"created_at":null,"updated_at":null,"pushed_at":null,"language":null,"tags":[],"dependencies":["git"],"installer_indicators":[],"default_branch":"main","latest_release":null,"preferred_delivery":"git","homepage":null,"archived":false},
-    {"id":"49990","slug":"server-control","aliases":["server-control-suite","servercontrol"],"name":"server-control-suite","category":"tools","type":"repo","version":"repo","platforms":["linux"],"architectures":["all"],"source":"https://github.com/baska-pro/server-control-suite.git","action":"recipe:recipes/server-control.sh","recipe":"recipes/server-control.sh","sha256":null,"description":"Public repository baska-pro/server-control-suite.","visibility":"public","trust":"trusted","status":"ready","repository_id":1349269933,"created_at":null,"updated_at":null,"pushed_at":null,"language":null,"tags":["server","monitoring","telegram","dashboard","automation"],"dependencies":["git"],"installer_indicators":[],"default_branch":"main","latest_release":null,"preferred_delivery":"git","homepage":null,"archived":false},
-    {"id":"49989","slug":"windows-shortcut-control","aliases":["windowsshortcutcontrol"],"name":"windows-shortcut-control","category":"repositories","type":"repo","version":"repo","platforms":["windows"],"architectures":["all"],"source":"https://github.com/baska-pro/windows-shortcut-control.git","action":"smart","recipe":null,"sha256":null,"description":"Public repository baska-pro/windows-shortcut-control.","visibility":"public","trust":"reviewed","status":"discovered","repository_id":1349185029,"created_at":null,"updated_at":null,"pushed_at":null,"language":null,"tags":["windows","utility","shortcuts"],"dependencies":["git"],"installer_indicators":[],"default_branch":"main","latest_release":null,"preferred_delivery":"git","homepage":null,"archived":false},
-    {"id":"49988","slug":"baska-pro","aliases":["baskapro"],"name":"baska-pro","category":"repositories","type":"repo","version":"repo","platforms":["all"],"architectures":["all"],"source":"https://github.com/baska-pro/baska-pro.git","action":"smart","recipe":null,"sha256":null,"description":"Public repository baska-pro/baska-pro.","visibility":"public","trust":"reviewed","status":"discovered","repository_id":1349152032,"created_at":null,"updated_at":null,"pushed_at":null,"language":null,"tags":[],"dependencies":["git"],"installer_indicators":[],"default_branch":"main","latest_release":null,"preferred_delivery":"git","homepage":null,"archived":false},
-    {"id":"A50000","slug":"kuisingo","aliases":["kuis","kuisingo-app"],"name":"KuisinGo","category":"apps","type":"apk","version":"01.0712.00","platforms":["termux"],"architectures":["all"],"source":"https://raw.githubusercontent.com/baska-pro/baska-hub/main/apps/android/kuisingo/KuisinGo_01.0712.00.apk","action":"open","recipe":null,"sha256":null,"description":"KuisinGo APK for Android.","visibility":"public","trust":"trusted","status":"ready","repository_id":null,"created_at":"2026-09-06T01:49:25Z","updated_at":"2026-09-06T01:49:25Z","pushed_at":null,"language":null,"tags":["android","apk","app"],"dependencies":[],"installer_indicators":[],"default_branch":null,"latest_release":null,"preferred_delivery":"raw","homepage":null,"archived":false}
+    {
+      "id": "50000",
+      "slug": "web-print-app",
+      "aliases": [
+        "webprintapp"
+      ],
+      "name": "web-print-app",
+      "category": "repositories",
+      "type": "repo",
+      "version": "v4.0.3-advanced",
+      "platforms": [
+        "windows"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/web-print-app.git",
+      "action": "smart",
+      "recipe": null,
+      "sha256": null,
+      "description": "Local Windows printer WebApp with file manager, persistent print queue, spooler control, Office/PDF printing, PWA, users, backup, and automation.",
+      "visibility": "public",
+      "trust": "reviewed",
+      "status": "ready",
+      "repository_id": 1354456051,
+      "created_at": "2026-09-02T07:18:16Z",
+      "updated_at": "2026-09-02T08:13:58Z",
+      "pushed_at": "2026-09-02T08:08:32Z",
+      "language": "Python",
+      "tags": [
+        "automation",
+        "fastapi",
+        "file-manager",
+        "local-first",
+        "microsoft-office",
+        "print-management",
+        "print-server",
+        "printer",
+        "printing",
+        "pwa",
+        "python",
+        "pywin32",
+        "remote-printing",
+        "self-hosted",
+        "sqlite",
+        "system-utilities",
+        "webapp",
+        "windows",
+        "windows-spooler",
+        "windows-tools"
+      ],
+      "dependencies": [
+        "git",
+        "python"
+      ],
+      "installer_indicators": [
+        "python"
+      ],
+      "default_branch": "main",
+      "latest_release": {
+        "tag_name": "v4.0.3-advanced",
+        "name": "Web Print App v4.0.3-advanced",
+        "published_at": "2026-09-02T08:08:32Z",
+        "html_url": "https://github.com/baska-pro/web-print-app/releases/tag/v4.0.3-advanced",
+        "assets": [
+          {
+            "name": "Web-Print-App-v4.0.3-advanced.zip",
+            "size": 91032,
+            "download_url": "https://github.com/baska-pro/web-print-app/releases/download/v4.0.3-advanced/Web-Print-App-v4.0.3-advanced.zip"
+          }
+        ]
+      },
+      "preferred_delivery": "release",
+      "homepage": null,
+      "archived": false
+    },
+    {
+      "id": "49999",
+      "slug": "dhs-app",
+      "aliases": [
+        "dhsapp"
+      ],
+      "name": "dhs-app",
+      "category": "repositories",
+      "type": "repo",
+      "version": "v1.0.0",
+      "platforms": [
+        "all"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/dhs-app.git",
+      "action": "smart",
+      "recipe": null,
+      "sha256": null,
+      "description": "Local-first progressive daily habit tracker with prayer reminders, points, streaks, statistics, offline PWA support, backup/restore, and optional Google Sheets or Supabase sync.",
+      "visibility": "public",
+      "trust": "reviewed",
+      "status": "ready",
+      "repository_id": 1353373231,
+      "created_at": "2026-09-01T09:20:48Z",
+      "updated_at": "2026-09-02T08:13:44Z",
+      "pushed_at": "2026-09-01T11:01:38Z",
+      "language": "TypeScript",
+      "tags": [
+        "daily-habits",
+        "google-apps-script",
+        "google-sheets",
+        "habit-tracker",
+        "habit-tracking",
+        "islamic",
+        "local-first",
+        "node",
+        "offline-first",
+        "open-source",
+        "prayer",
+        "productivity",
+        "progressive-web-app",
+        "pwa",
+        "react",
+        "reactjs",
+        "self-improvement",
+        "supabase",
+        "typescript",
+        "vite",
+        "web-app"
+      ],
+      "dependencies": [
+        "git",
+        "node",
+        "npm"
+      ],
+      "installer_indicators": [
+        "node"
+      ],
+      "default_branch": "main",
+      "latest_release": {
+        "tag_name": "v1.0.0",
+        "name": "DHS App v1.0.0 — Initial Stable Release",
+        "published_at": "2026-09-01T11:01:38Z",
+        "html_url": "https://github.com/baska-pro/dhs-app/releases/tag/v1.0.0",
+        "assets": [
+          {
+            "name": "DHS-App-v1.0.0.zip",
+            "size": 113246,
+            "download_url": "https://github.com/baska-pro/dhs-app/releases/download/v1.0.0/DHS-App-v1.0.0.zip"
+          },
+          {
+            "name": "DHS-App-v1.0.0.zip.sha256",
+            "size": 85,
+            "download_url": "https://github.com/baska-pro/dhs-app/releases/download/v1.0.0/DHS-App-v1.0.0.zip.sha256"
+          }
+        ]
+      },
+      "preferred_delivery": "release",
+      "homepage": null,
+      "archived": false
+    },
+    {
+      "id": "49998",
+      "slug": "griya-kas",
+      "aliases": [
+        "griyakas"
+      ],
+      "name": "griya-kas",
+      "category": "repositories",
+      "type": "repo",
+      "version": "v2.0.0",
+      "platforms": [
+        "all"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/griya-kas.git",
+      "action": "smart",
+      "recipe": null,
+      "sha256": null,
+      "description": "Local-first personal and family finance PWA with budgets, debt tracking, savings goals, recurring bills, backup/restore, and optional Google Sheets or Supabase sync.",
+      "visibility": "public",
+      "trust": "reviewed",
+      "status": "ready",
+      "repository_id": 1352148450,
+      "created_at": "2026-08-31T07:57:16Z",
+      "updated_at": "2026-09-02T08:13:43Z",
+      "pushed_at": "2026-08-31T22:42:00Z",
+      "language": "TypeScript",
+      "tags": [
+        "budget-tracker",
+        "expense-tracker",
+        "family-finance",
+        "finance-manager",
+        "financial-planning",
+        "google-sheets",
+        "indonesia",
+        "local-first",
+        "money-manager",
+        "node",
+        "offline-first",
+        "personal-finance",
+        "progressive-web-app",
+        "pwa",
+        "react",
+        "recharts",
+        "supabase",
+        "typescript",
+        "vite"
+      ],
+      "dependencies": [
+        "git",
+        "node",
+        "npm"
+      ],
+      "installer_indicators": [
+        "node"
+      ],
+      "default_branch": "main",
+      "latest_release": {
+        "tag_name": "v2.0.0",
+        "name": "GriyaKas v2.0.0",
+        "published_at": "2026-08-31T12:52:43Z",
+        "html_url": "https://github.com/baska-pro/griya-kas/releases/tag/v2.0.0",
+        "assets": [
+          {
+            "name": "GriyaKas-v2.0.0-final.zip",
+            "size": 114718,
+            "download_url": "https://github.com/baska-pro/griya-kas/releases/download/v2.0.0/GriyaKas-v2.0.0-final.zip"
+          },
+          {
+            "name": "GriyaKas-v2.0.0-SHA256SUMS.txt",
+            "size": 92,
+            "download_url": "https://github.com/baska-pro/griya-kas/releases/download/v2.0.0/GriyaKas-v2.0.0-SHA256SUMS.txt"
+          }
+        ]
+      },
+      "preferred_delivery": "release",
+      "homepage": null,
+      "archived": false
+    },
+    {
+      "id": "49997",
+      "slug": "script-note",
+      "aliases": [
+        "scriptnote"
+      ],
+      "name": "script-note",
+      "category": "repositories",
+      "type": "repo",
+      "version": "v1.0.0",
+      "platforms": [
+        "all"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/script-note.git",
+      "action": "smart",
+      "recipe": null,
+      "sha256": null,
+      "description": "Local-first script and code snippet manager with multi-file projects, version history, trash, JSON backups, sandboxed previews, and optional GitHub Gist sync.",
+      "visibility": "public",
+      "trust": "reviewed",
+      "status": "ready",
+      "repository_id": 1352068662,
+      "created_at": "2026-08-31T06:19:56Z",
+      "updated_at": "2026-08-31T07:15:08Z",
+      "pushed_at": "2026-08-31T07:11:57Z",
+      "language": "TypeScript",
+      "tags": [
+        "backup",
+        "code-editor",
+        "code-notes",
+        "code-snippets",
+        "developer-tools",
+        "github-gist",
+        "local-first",
+        "localstorage",
+        "node",
+        "prismjs",
+        "productivity",
+        "react",
+        "script-manager",
+        "snippet-manager",
+        "syntax-highlighting",
+        "tailwindcss",
+        "typescript",
+        "vite",
+        "web-app"
+      ],
+      "dependencies": [
+        "git",
+        "node",
+        "npm"
+      ],
+      "installer_indicators": [
+        "node"
+      ],
+      "default_branch": "main",
+      "latest_release": {
+        "tag_name": "v1.0.0",
+        "name": "Script Note v1.0.0",
+        "published_at": "2026-08-31T07:11:57Z",
+        "html_url": "https://github.com/baska-pro/script-note/releases/tag/v1.0.0",
+        "assets": [
+          {
+            "name": "RELEASE_NOTES_v1.0.0.md",
+            "size": 995,
+            "download_url": "https://github.com/baska-pro/script-note/releases/download/v1.0.0/RELEASE_NOTES_v1.0.0.md"
+          }
+        ]
+      },
+      "preferred_delivery": "release",
+      "homepage": null,
+      "archived": false
+    },
+    {
+      "id": "49996",
+      "slug": "remotepc-pro",
+      "aliases": [
+        "remotepcpro"
+      ],
+      "name": "remotepc-pro",
+      "category": "repositories",
+      "type": "repo",
+      "version": "v2.0.0",
+      "platforms": [
+        "windows"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/remotepc-pro.git",
+      "action": "smart",
+      "recipe": null,
+      "sha256": null,
+      "description": "Owner-only Windows PC monitoring and safe remote power control via Telegram and a secure OTP-protected web dashboard.",
+      "visibility": "public",
+      "trust": "reviewed",
+      "status": "ready",
+      "repository_id": 1352034396,
+      "created_at": "2026-08-31T05:34:08Z",
+      "updated_at": "2026-09-02T08:13:48Z",
+      "pushed_at": "2026-08-31T06:10:01Z",
+      "language": "Python",
+      "tags": [
+        "flask",
+        "otp-authentication",
+        "powershell",
+        "python",
+        "remote-desktop",
+        "remote-monitoring",
+        "remote-pc",
+        "system-monitoring",
+        "telegram-bot",
+        "waitress",
+        "web-dashboard",
+        "windows",
+        "windows-10",
+        "windows-11"
+      ],
+      "dependencies": [
+        "git",
+        "python"
+      ],
+      "installer_indicators": [
+        "install.ps1",
+        "python"
+      ],
+      "default_branch": "main",
+      "latest_release": {
+        "tag_name": "v2.0.0",
+        "name": "RemotePC Pro v2.0.0",
+        "published_at": "2026-08-31T06:10:01Z",
+        "html_url": "https://github.com/baska-pro/remotepc-pro/releases/tag/v2.0.0",
+        "assets": [
+          {
+            "name": "install.ps1",
+            "size": 1328,
+            "download_url": "https://github.com/baska-pro/remotepc-pro/releases/download/v2.0.0/install.ps1"
+          },
+          {
+            "name": "remotepc-pro-v2.0.0-github.zip",
+            "size": 48899,
+            "download_url": "https://github.com/baska-pro/remotepc-pro/releases/download/v2.0.0/remotepc-pro-v2.0.0-github.zip"
+          },
+          {
+            "name": "remotepc_pro.py",
+            "size": 138284,
+            "download_url": "https://github.com/baska-pro/remotepc-pro/releases/download/v2.0.0/remotepc_pro.py"
+          }
+        ]
+      },
+      "preferred_delivery": "release",
+      "homepage": null,
+      "archived": false
+    },
+    {
+      "id": "49995",
+      "slug": "windows-app-locker",
+      "aliases": [
+        "windowsapplocker"
+      ],
+      "name": "windows-app-locker",
+      "category": "repositories",
+      "type": "repo",
+      "version": "v2.0.0",
+      "platforms": [
+        "windows"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/windows-app-locker.git",
+      "action": "smart",
+      "recipe": null,
+      "sha256": null,
+      "description": "User-level Windows application locker with PIN protection, system tray, per-user autostart, diagnostics, and owner-only Telegram controls.",
+      "visibility": "public",
+      "trust": "reviewed",
+      "status": "ready",
+      "repository_id": 1351971401,
+      "created_at": "2026-08-31T04:04:30Z",
+      "updated_at": "2026-09-02T08:13:47Z",
+      "pushed_at": "2026-08-31T05:12:58Z",
+      "language": "Python",
+      "tags": [
+        "app-locker",
+        "dpapi",
+        "powershell",
+        "productivity",
+        "python",
+        "security",
+        "security-tools",
+        "system-tray",
+        "telegram-bot",
+        "windows",
+        "windows-10",
+        "windows-11"
+      ],
+      "dependencies": [
+        "git",
+        "python"
+      ],
+      "installer_indicators": [
+        "install.ps1",
+        "python"
+      ],
+      "default_branch": "main",
+      "latest_release": {
+        "tag_name": "v2.0.0",
+        "name": "Windows App Locker v2.0.0",
+        "published_at": "2026-08-31T04:53:59Z",
+        "html_url": "https://github.com/baska-pro/windows-app-locker/releases/tag/v2.0.0",
+        "assets": [
+          {
+            "name": "windows-app-locker-v2.0.0-github.zip",
+            "size": 41552,
+            "download_url": "https://github.com/baska-pro/windows-app-locker/releases/download/v2.0.0/windows-app-locker-v2.0.0-github.zip"
+          },
+          {
+            "name": "windows-app-locker-v2.0.0-SHA256SUMS.txt",
+            "size": 207,
+            "download_url": "https://github.com/baska-pro/windows-app-locker/releases/download/v2.0.0/windows-app-locker-v2.0.0-SHA256SUMS.txt"
+          },
+          {
+            "name": "windows_app_locker.py",
+            "size": 77415,
+            "download_url": "https://github.com/baska-pro/windows-app-locker/releases/download/v2.0.0/windows_app_locker.py"
+          }
+        ]
+      },
+      "preferred_delivery": "release",
+      "homepage": null,
+      "archived": false
+    },
+    {
+      "id": "49994",
+      "slug": "remotedroid-control",
+      "aliases": [
+        "remotedroidcontrol"
+      ],
+      "name": "remotedroid-control",
+      "category": "repositories",
+      "type": "repo",
+      "version": "v2.2.1",
+      "platforms": [
+        "termux"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/remotedroid-control.git",
+      "action": "smart",
+      "recipe": null,
+      "sha256": null,
+      "description": "Interactive Telegram-based Android and Termux device monitoring and utilities bot with secure PIN access, diagnostics, and button-driven controls.",
+      "visibility": "public",
+      "trust": "reviewed",
+      "status": "ready",
+      "repository_id": 1351157599,
+      "created_at": "2026-08-30T06:24:45Z",
+      "updated_at": "2026-08-31T06:53:04Z",
+      "pushed_at": "2026-08-30T09:00:44Z",
+      "language": "Python",
+      "tags": [
+        "android",
+        "android-tools",
+        "automation",
+        "bot",
+        "bot-telegram",
+        "developer-tools",
+        "device-monitoring",
+        "linux",
+        "python",
+        "remote-monitoring",
+        "remotedroid",
+        "system-monitor",
+        "telegram-fix",
+        "termux",
+        "termux-api"
+      ],
+      "dependencies": [
+        "git",
+        "python"
+      ],
+      "installer_indicators": [
+        "python"
+      ],
+      "default_branch": "main",
+      "latest_release": {
+        "tag_name": "v2.2.1",
+        "name": "RemoteDroid Control v2.2.1",
+        "published_at": "2026-08-30T07:02:57Z",
+        "html_url": "https://github.com/baska-pro/remotedroid-control/releases/tag/v2.2.1",
+        "assets": [
+          {
+            "name": "remotedroid.py",
+            "size": 63787,
+            "download_url": "https://github.com/baska-pro/remotedroid-control/releases/download/v2.2.1/remotedroid.py"
+          }
+        ]
+      },
+      "preferred_delivery": "release",
+      "homepage": null,
+      "archived": false
+    },
+    {
+      "id": "49993",
+      "slug": "siskamling-digital",
+      "aliases": [
+        "siskamlingdigital"
+      ],
+      "name": "siskamling-digital",
+      "category": "repositories",
+      "type": "repo",
+      "version": "v6.10.0",
+      "platforms": [
+        "all"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/siskamling-digital.git",
+      "action": "git",
+      "recipe": null,
+      "sha256": null,
+      "description": "Digital neighborhood security and patrol management PWA with FastAPI, attendance, GPS patrols, chat, SOS, Web Push, reports, backups and administration.",
+      "visibility": "public",
+      "trust": "reviewed",
+      "status": "repository_only",
+      "repository_id": 1351117057,
+      "created_at": "2026-08-30T05:02:43Z",
+      "updated_at": "2026-08-31T06:52:57Z",
+      "pushed_at": "2026-08-30T09:30:26Z",
+      "language": "Shell",
+      "tags": [
+        "attendance-system",
+        "bash",
+        "community",
+        "fastapi",
+        "gps",
+        "linux",
+        "neighborhood-security",
+        "patrol",
+        "pwa",
+        "python",
+        "self-hosted",
+        "shell",
+        "siskamling",
+        "sqlite",
+        "web-push"
+      ],
+      "dependencies": [
+        "git"
+      ],
+      "installer_indicators": [],
+      "default_branch": "main",
+      "latest_release": {
+        "tag_name": "v6.10.0",
+        "name": "Siskamling Digital v6.10.0",
+        "published_at": "2026-08-30T05:19:11Z",
+        "html_url": "https://github.com/baska-pro/siskamling-digital/releases/tag/v6.10.0",
+        "assets": [
+          {
+            "name": "siskamling.sh",
+            "size": 304713,
+            "download_url": "https://github.com/baska-pro/siskamling-digital/releases/download/v6.10.0/siskamling.sh"
+          }
+        ]
+      },
+      "preferred_delivery": "release",
+      "homepage": null,
+      "archived": false
+    },
+    {
+      "id": "49992",
+      "slug": "terminal-explorer",
+      "aliases": [
+        "terminalexplorer"
+      ],
+      "name": "terminal-explorer",
+      "category": "repositories",
+      "type": "repo",
+      "version": "v3.0.0",
+      "platforms": [
+        "termux"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/terminal-explorer.git",
+      "action": "smart",
+      "recipe": null,
+      "sha256": null,
+      "description": "Interactive terminal file manager built with Bash + fzf for Termux and Linux, featuring previews, search, bookmarks, clipboard, archives, and safe file operations.",
+      "visibility": "public",
+      "trust": "reviewed",
+      "status": "ready",
+      "repository_id": 1350156436,
+      "created_at": "2026-08-29T00:51:32Z",
+      "updated_at": "2026-08-31T06:53:25Z",
+      "pushed_at": "2026-08-30T08:23:21Z",
+      "language": "Shell",
+      "tags": [
+        "arch-linux",
+        "bash",
+        "cli",
+        "debian",
+        "developer-tools",
+        "file-manager",
+        "fzf",
+        "linux",
+        "shell",
+        "shell-script",
+        "terminal",
+        "terminal-explorer",
+        "terminal-file-manager",
+        "termux",
+        "tui",
+        "ubuntu"
+      ],
+      "dependencies": [
+        "git"
+      ],
+      "installer_indicators": [
+        "install.sh"
+      ],
+      "default_branch": "main",
+      "latest_release": {
+        "tag_name": "v3.0.0",
+        "name": "Terminal Explorer v3.0.0",
+        "published_at": "2026-08-29T02:37:21Z",
+        "html_url": "https://github.com/baska-pro/terminal-explorer/releases/tag/v3.0.0",
+        "assets": [
+          {
+            "name": "install.sh",
+            "size": 5681,
+            "download_url": "https://github.com/baska-pro/terminal-explorer/releases/download/v3.0.0/install.sh"
+          }
+        ]
+      },
+      "preferred_delivery": "release",
+      "homepage": null,
+      "archived": false
+    },
+    {
+      "id": "49991",
+      "slug": "bersihin",
+      "aliases": [
+        "bersihin"
+      ],
+      "name": "bersihin",
+      "category": "repositories",
+      "type": "repo",
+      "version": "v2.0.1",
+      "platforms": [
+        "windows"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/bersihin.git",
+      "action": "smart",
+      "recipe": null,
+      "sha256": null,
+      "description": "Safe cross-platform cleaner for Windows, Linux, Termux, WSL and macOS with automatic platform detection, dry-run, developer cache cleanup and secure install/update tools.",
+      "visibility": "public",
+      "trust": "reviewed",
+      "status": "ready",
+      "repository_id": 1349346037,
+      "created_at": "2026-08-28T07:55:56Z",
+      "updated_at": "2026-08-31T06:53:29Z",
+      "pushed_at": "2026-08-30T08:57:53Z",
+      "language": "Python",
+      "tags": [
+        "automation",
+        "cache-cleaner",
+        "cleaner",
+        "cli",
+        "cross-platform",
+        "developer-tools",
+        "linux",
+        "macos",
+        "powershell",
+        "python",
+        "system-utility",
+        "termux",
+        "windows",
+        "wsl"
+      ],
+      "dependencies": [
+        "git",
+        "python"
+      ],
+      "installer_indicators": [
+        "install.ps1",
+        "install.sh",
+        "python"
+      ],
+      "default_branch": "main",
+      "latest_release": {
+        "tag_name": "v2.0.1",
+        "name": "Bersihin v2.0.1",
+        "published_at": "2026-08-28T08:26:44Z",
+        "html_url": "https://github.com/baska-pro/bersihin/releases/tag/v2.0.1",
+        "assets": [
+          {
+            "name": "bersihin-v2.0.1.zip",
+            "size": 31418,
+            "download_url": "https://github.com/baska-pro/bersihin/releases/download/v2.0.1/bersihin-v2.0.1.zip"
+          }
+        ]
+      },
+      "preferred_delivery": "release",
+      "homepage": null,
+      "archived": false
+    },
+    {
+      "id": "49990",
+      "slug": "server-control",
+      "aliases": [
+        "server-control-suite",
+        "servercontrol"
+      ],
+      "name": "server-control-suite",
+      "category": "tools",
+      "type": "repo",
+      "version": "windows-v5.0.0",
+      "platforms": [
+        "linux"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/server-control-suite.git",
+      "action": "recipe:recipes/server-control.sh",
+      "recipe": "recipes/server-control.sh",
+      "sha256": null,
+      "description": "Cross-platform remote management suite for Linux and Windows with Telegram bot control, web dashboard, monitoring, file/process management, alerts, Docker, services and automation.",
+      "visibility": "public",
+      "trust": "trusted",
+      "status": "ready",
+      "repository_id": 1349269933,
+      "created_at": "2026-08-28T06:21:31Z",
+      "updated_at": "2026-08-31T06:53:19Z",
+      "pushed_at": "2026-08-30T08:19:54Z",
+      "language": "Python",
+      "tags": [
+        "automation",
+        "dashboard",
+        "devops",
+        "docker",
+        "flask",
+        "linux",
+        "monitoring",
+        "python",
+        "remote-management",
+        "server",
+        "server-management",
+        "system-administration",
+        "system-monitoring",
+        "telegram",
+        "telegram-bot",
+        "web-dashboard",
+        "windows"
+      ],
+      "dependencies": [
+        "git",
+        "python"
+      ],
+      "installer_indicators": [
+        "python"
+      ],
+      "default_branch": "main",
+      "latest_release": {
+        "tag_name": "windows-v5.0.0",
+        "name": "Server Control Suite for Windows v5.0.0",
+        "published_at": "2026-08-28T06:47:04Z",
+        "html_url": "https://github.com/baska-pro/server-control-suite/releases/tag/windows-v5.0.0",
+        "assets": [
+          {
+            "name": "server_control_win.py",
+            "size": 215348,
+            "download_url": "https://github.com/baska-pro/server-control-suite/releases/download/windows-v5.0.0/server_control_win.py"
+          }
+        ]
+      },
+      "preferred_delivery": "release",
+      "homepage": null,
+      "archived": false
+    },
+    {
+      "id": "49989",
+      "slug": "windows-shortcut-control",
+      "aliases": [
+        "windowsshortcutcontrol"
+      ],
+      "name": "windows-shortcut-control",
+      "category": "repositories",
+      "type": "repo",
+      "version": "v3.2.1",
+      "platforms": [
+        "windows"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/windows-shortcut-control.git",
+      "action": "git",
+      "recipe": null,
+      "sha256": null,
+      "description": "Portable PowerShell/WPF productivity launcher and Windows control center for shortcuts, system tools, monitoring, backup, and automation.",
+      "visibility": "public",
+      "trust": "reviewed",
+      "status": "repository_only",
+      "repository_id": 1349185029,
+      "created_at": "2026-08-28T04:07:45Z",
+      "updated_at": "2026-08-30T08:56:10Z",
+      "pushed_at": "2026-08-30T08:54:58Z",
+      "language": "Batchfile",
+      "tags": [
+        "automation",
+        "batchfile",
+        "launcher",
+        "portable",
+        "powershell",
+        "powershell-gui",
+        "productivity",
+        "shortcut-manager",
+        "shortcuts",
+        "system-utilities",
+        "utility",
+        "windows",
+        "windows-10",
+        "windows-11",
+        "windows-7",
+        "windows-tools",
+        "windows-utility-kit",
+        "wpf"
+      ],
+      "dependencies": [
+        "git"
+      ],
+      "installer_indicators": [],
+      "default_branch": "main",
+      "latest_release": {
+        "tag_name": "v3.2.1",
+        "name": "Windows Shortcut Control v3.2.1",
+        "published_at": "2026-08-28T04:29:21Z",
+        "html_url": "https://github.com/baska-pro/windows-shortcut-control/releases/tag/v3.2.1",
+        "assets": [
+          {
+            "name": "Windows_Shortcut_Control.cmd",
+            "size": 339953,
+            "download_url": "https://github.com/baska-pro/windows-shortcut-control/releases/download/v3.2.1/Windows_Shortcut_Control.cmd"
+          }
+        ]
+      },
+      "preferred_delivery": "release",
+      "homepage": null,
+      "archived": false
+    },
+    {
+      "id": "49988",
+      "slug": "baska-pro",
+      "aliases": [
+        "baskapro"
+      ],
+      "name": "baska-pro",
+      "category": "repositories",
+      "type": "repo",
+      "version": "repo",
+      "platforms": [
+        "all"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/baska-pro.git",
+      "action": "git",
+      "recipe": null,
+      "sha256": null,
+      "description": "Personal GitHub profile, open-source projects, automation tools, and experiments.",
+      "visibility": "public",
+      "trust": "reviewed",
+      "status": "repository_only",
+      "repository_id": 1349152032,
+      "created_at": "2026-08-28T03:11:28Z",
+      "updated_at": "2026-09-01T14:33:04Z",
+      "pushed_at": "2026-09-01T13:54:29Z",
+      "language": null,
+      "tags": [],
+      "dependencies": [
+        "git"
+      ],
+      "installer_indicators": [],
+      "default_branch": "main",
+      "latest_release": null,
+      "preferred_delivery": "git",
+      "homepage": null,
+      "archived": false
+    },
+    {
+      "id": "A50000",
+      "slug": "kuisingo",
+      "aliases": [
+        "kuis",
+        "kuisingo-app"
+      ],
+      "name": "KuisinGo",
+      "category": "apps",
+      "type": "apk",
+      "version": "01.0712.00",
+      "platforms": [
+        "termux"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "path": "apps/android/kuisingo/KuisinGo_01.0712.00.apk",
+      "source": "https://raw.githubusercontent.com/baska-pro/baska-hub/main/apps/android/kuisingo/KuisinGo_01.0712.00.apk",
+      "action": "open",
+      "trust": "trusted",
+      "status": "ready",
+      "visibility": "public",
+      "created_at": "2026-09-06T01:49:25Z",
+      "tags": [
+        "android",
+        "apk",
+        "app"
+      ],
+      "dependencies": [],
+      "description": "KuisinGo APK for Android.",
+      "sha256": "40974beab2da61a0ab13b44cc74704638b7460970423a7b2a5bbaad3f765a2e5",
+      "updated_at": "2026-09-06T01:49:25Z",
+      "preferred_delivery": "raw",
+      "latest_release": null
+    }
   ]
 }
