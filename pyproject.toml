@@ -4,14 +4,18 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "baska"
-version = "1.2.0"
-description = "BASKA Hub interactive package and repository manager"
+version = "1.2.1"
+description = "Interactive package and GitHub repository manager for Termux, Linux and Windows"
 readme = "README.md"
 requires-python = ">=3.10"
+license = "MIT"
+authors = [{name = "Lathif Baska"}]
 keywords = ["cli", "package-manager", "github", "termux", "linux", "windows", "repository-manager", "tui"]
 classifiers = [
+  "Development Status :: 4 - Beta",
   "Environment :: Console",
   "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
@@ -23,11 +27,12 @@ classifiers = [
 Homepage = "https://github.com/baska-pro/baska-hub"
 Repository = "https://github.com/baska-pro/baska-hub"
 Issues = "https://github.com/baska-pro/baska-hub/issues"
+Documentation = "https://github.com/baska-pro/baska-hub/tree/main/docs"
 Catalog = "https://baska-pro.github.io/baska-hub/"
 
 [project.optional-dependencies]
 dev = ["build>=1.2", "twine>=6"]
 
 [tool.setuptools]
-py-modules = ["baska_tui", "baska_tui_v2", "baska_core_v2"]
+py-modules = ["baska_help", "baska_tui_v2", "baska_core_v2"]
 script-files = ["bin/baska", "bin/baska-core"]
