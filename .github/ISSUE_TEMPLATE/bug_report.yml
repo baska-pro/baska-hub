@@ -1,0 +1,53 @@
+name: Bug report
+description: Laporkan bug yang dapat direproduksi pada BASKA Hub.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Jangan tempel token, password, private key, `.env`, atau metadata private repository.
+  - type: input
+    id: version
+    attributes:
+      label: Versi BASKA
+      description: Jalankan `baska version`.
+      placeholder: 1.2.1
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: Platform
+      placeholder: Termux arm64 / Debian UserLAnd / Windows 11
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Masalah
+      description: Jelaskan apa yang terjadi.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Langkah reproduksi
+      placeholder: |
+        1. Jalankan ...
+        2. Pilih ...
+        3. Muncul ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Hasil yang diharapkan
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log relevan
+      description: Hapus credential/secret sebelum mengirim.
+      render: shell

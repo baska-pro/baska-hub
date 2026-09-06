@@ -1,0 +1,38 @@
+name: Feature request
+description: Usulkan peningkatan BASKA Hub.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Masalah atau kebutuhan
+      description: Jelaskan kebutuhan yang ingin diselesaikan.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Usulan solusi
+      description: Jelaskan perilaku atau UX yang diinginkan.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - TUI / UX
+        - Installer
+        - Registry / catalog
+        - GitHub / private repository
+        - Update / rollback / repair
+        - Packaging / PyPI
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Catatan tambahan
