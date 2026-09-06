@@ -1,25 +1,43 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "name": "BASKA Hub",
   "slug": "baska-hub",
   "owner": "baska-pro",
   "default_branch": "main",
   "cli": {
     "name": "baska",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "path": "bin/baska"
   },
   "registry": "registry/packages.tsv",
   "packages": [
     {
-      "id": "kuisingo",
+      "id": "00001",
+      "slug": "server-control",
+      "aliases": ["server-control-suite", "servercontrol"],
+      "name": "Server Control Suite",
+      "category": "tools",
+      "type": "repo",
+      "version": "4.0.0",
+      "platforms": ["linux"],
+      "source": "https://github.com/baska-pro/server-control-suite.git",
+      "install": {
+        "action": "recipe",
+        "recipe": "recipes/server-control.sh"
+      },
+      "sha256": null,
+      "description": "Remote management server Linux dari repo baska-pro/server-control-suite."
+    },
+    {
+      "id": "00002",
+      "slug": "kuisingo",
+      "aliases": ["kuis", "kuisingo-app"],
       "name": "KuisinGo",
       "category": "apps",
       "type": "apk",
       "version": "01.0712.00",
       "platforms": ["termux"],
-      "architectures": ["all"],
-      "path": "apps/android/kuisingo/KuisinGo_01.0712.00.apk",
+      "source": "https://raw.githubusercontent.com/baska-pro/baska-hub/main/apps/android/kuisingo/KuisinGo_01.0712.00.apk",
       "install": {
         "action": "open",
         "requires_confirmation": true
