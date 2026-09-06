@@ -7,6 +7,7 @@ on:
       - 'pyproject.toml'
       - 'baska_help.py'
       - 'baska_tui_v2.py'
+      - 'baska_simple_ui.py'
       - 'baska_core_v2.py'
       - 'baska_self_update.py'
       - 'bin/baska'
@@ -92,6 +93,7 @@ jobs:
           /tmp/baska-test/bin/baska help upgrade >/dev/null
           /tmp/baska-test/bin/baska upgrade --help >/dev/null
           /tmp/baska-test/bin/baska version
+          printf '0\n' | /tmp/baska-test/bin/python -c 'from baska_simple_ui import main; main()' >/dev/null
           /tmp/baska-test/bin/baska-core version
       - uses: actions/upload-artifact@v4
         with:
