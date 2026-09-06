@@ -13,7 +13,7 @@ jobs:
       - name: Syntax checks
         run: |
           sh -n install.sh
-          python3 -m py_compile bin/baska scripts/sync_repositories.py
+          python3 -m py_compile bin/baska baska_tui_v2.py baska_core_v2.py scripts/sync_repositories.py scripts/audit_catalog.py
           find recipes -type f -name '*.sh' -print0 | xargs -0 -r -n1 sh -n
       - name: JSON checks
         run: |
@@ -23,8 +23,9 @@ jobs:
           python3 -m json.tool registry/overrides.json >/dev/null
           python3 -m json.tool registry/assets.json >/dev/null
           python3 -m json.tool registry/collections.json >/dev/null
-      - name: Registry policy checks
+      - name: Registry and installer audit
         run: |
+          python3 scripts/audit_catalog.py
           python3 - <<'PY'
           import csv,json,pathlib,re
           root=pathlib.Path('.');catalog=json.loads((root/'registry/catalog.json').read_text());packages=catalog['packages'];ids=[p['id'] for p in packages];slugs=[p['slug'] for p in packages]
