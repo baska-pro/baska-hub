@@ -3,7 +3,7 @@
   "owner": "baska-pro",
   "hub_repository_id": 1358699949,
   "public_id_anchor": 50000,
-  "next_public_id": 50001,
+  "next_public_id": 50002,
   "repositories": {
     "1354456051": {
       "package_id": "50000",
@@ -69,6 +69,11 @@
       "package_id": "49988",
       "full_name": "baska-pro/baska-pro",
       "created_at": "2026-08-28T03:11:28Z"
+    },
+    "1358854781": {
+      "package_id": "50001",
+      "full_name": "baska-pro/shopping-list",
+      "created_at": "2026-09-06T06:28:48Z"
     }
   }
 }

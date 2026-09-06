@@ -2,9 +2,49 @@
   "schema_version": 3,
   "name": "BASKA Hub Catalog",
   "owner": "baska-pro",
-  "generated_at": "2026-09-06T04:00:36Z",
+  "generated_at": "2026-09-06T07:06:47Z",
   "private_policy": "Private repositories are never stored in this public catalog; they are discovered locally by `baska init`.",
   "packages": [
+    {
+      "id": "50001",
+      "slug": "shopping-list",
+      "aliases": [
+        "shoppinglist"
+      ],
+      "name": "shopping-list",
+      "category": "repositories",
+      "type": "repo",
+      "version": "repo",
+      "platforms": [
+        "all"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/shopping-list.git",
+      "action": "git",
+      "recipe": null,
+      "sha256": null,
+      "description": "Public repository baska-pro/shopping-list.",
+      "visibility": "public",
+      "trust": "reviewed",
+      "status": "repository_only",
+      "repository_id": 1358854781,
+      "created_at": "2026-09-06T06:28:48Z",
+      "updated_at": "2026-09-06T06:38:45Z",
+      "pushed_at": "2026-09-06T07:05:15Z",
+      "language": null,
+      "tags": [],
+      "dependencies": [
+        "git"
+      ],
+      "installer_indicators": [],
+      "default_branch": "main",
+      "latest_release": null,
+      "preferred_delivery": "git",
+      "homepage": null,
+      "archived": false
+    },
     {
       "id": "50000",
       "slug": "web-print-app",
