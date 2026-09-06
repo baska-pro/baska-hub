@@ -10,7 +10,7 @@ import time
 from importlib.machinery import SourceFileLoader
 from pathlib import Path
 
-VERSION = "1.2.1"
+VERSION = "1.2.2"
 
 
 def _legacy_path() -> Path:
