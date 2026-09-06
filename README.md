@@ -1,19 +1,21 @@
 # BASKA Hub
 
-BASKA Hub adalah package dan GitHub repository manager interaktif untuk **Termux, Linux, dan Windows**. BASKA menyediakan dashboard TUI, katalog publik yang tersinkron otomatis, dukungan repository private melalui `baska init`, serta lifecycle install/update/remove/repair/rollback.
+BASKA Hub adalah package dan GitHub repository manager interaktif untuk **Termux, Linux, dan Windows**. BASKA menyediakan dashboard terminal, katalog publik yang tersinkron otomatis, dukungan repository private melalui `baska init`, serta lifecycle install/update/remove/repair/rollback.
 
 > Status: **Beta / public preview**. Gunakan pada perangkat Anda sendiri dan periksa detail paket sebelum menjalankan installer yang tidak Anda kenal.
 
 ## Fitur utama
 
 - Dashboard terminal interaktif: `baska`
-- Navigasi tombol arah + Enter
+- TUI curses pada terminal yang mendukungnya
+- Fallback dashboard portable pada Windows/non-curses
 - Katalog repository publik otomatis
 - Private repository hanya ditampilkan secara lokal setelah `baska init`
 - Install berdasarkan ID atau slug
 - Platform-aware installer
 - Managed recovery untuk install yang gagal
 - Update, remove, repair, rollback, status, versions
+- Self-update BASKA: `baska upgrade`
 - Python, Node.js, Bash, PowerShell, Docker dan repository-only workflows
 - Profiles, favorites, notifications, web catalog
 - Distribusi melalui PyPI dan GitHub
@@ -22,7 +24,7 @@ BASKA Hub adalah package dan GitHub repository manager interaktif untuk **Termux
 
 - Python 3.10+
 - Git untuk paket berbasis repository
-- Koneksi internet saat refresh/install
+- Koneksi internet saat refresh/install/update
 - Dependency tambahan dapat berbeda untuk setiap paket
 
 ## Instalasi
@@ -50,11 +52,16 @@ pipx install baska
 baska
 ```
 
-Upgrade:
+### Windows
 
-```bash
-pipx upgrade baska
+Dengan Python 3.10+ yang sudah masuk PATH:
+
+```powershell
+py -m pip install baska
+baska
 ```
+
+Jika modul `curses` tidak tersedia, BASKA otomatis memakai dashboard teks portable. Command langsung tetap dapat digunakan normal.
 
 ### Python environment biasa
 
@@ -63,11 +70,15 @@ python -m pip install baska
 baska
 ```
 
-Upgrade:
+### Bootstrap shell
+
+Untuk Termux/Linux:
 
 ```bash
-python -m pip install -U baska
+curl -fsSL https://raw.githubusercontent.com/baska-pro/baska-hub/main/install.sh | sh
 ```
+
+Bootstrap sekarang memasang paket BASKA lengkap melalui pip/pipx, bukan hanya mengunduh satu launcher.
 
 ### Versi terbaru langsung dari GitHub
 
@@ -75,11 +86,33 @@ python -m pip install -U baska
 python -m pip install -U "git+https://github.com/baska-pro/baska-hub.git"
 ```
 
-### Bootstrap shell
+## Update BASKA
+
+Setelah BASKA terpasang, gunakan command bawaan:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/baska-pro/baska-hub/main/install.sh | sh
+baska upgrade
 ```
+
+Cek apakah update tersedia tanpa memasang:
+
+```bash
+baska upgrade --check
+```
+
+Paksa refresh/reinstall bila diperlukan:
+
+```bash
+baska upgrade --force
+```
+
+Alias yang setara:
+
+```bash
+baska self-update
+```
+
+BASKA akan memilih metode `pip` atau `pipx` sesuai instalasi yang sedang digunakan.
 
 ## Dashboard
 
@@ -89,7 +122,7 @@ Jalankan tanpa argumen:
 baska
 ```
 
-Shortcut utama pada browser paket:
+Shortcut utama pada TUI curses:
 
 ```text
 ↑ / ↓    pilih
@@ -100,7 +133,10 @@ x        repair
 r        remove
 /        search
 Esc/q    kembali
+Ctrl+C   keluar
 ```
+
+Pada Windows/non-curses, BASKA otomatis menampilkan menu portable berbasis nomor.
 
 ## CLI
 
@@ -121,6 +157,7 @@ baska status
 baska outdated
 baska update <id|slug>
 baska update-all
+baska upgrade
 baska repair <id|slug>
 baska rollback <id|slug>
 baska remove <id|slug>
@@ -141,6 +178,7 @@ baska install bersihin
 baska install 49991
 baska info terminal-explorer
 baska repair bersihin
+baska upgrade --check
 ```
 
 ## Platform dan installer
@@ -191,7 +229,7 @@ BASKA memverifikasi akun GitHub yang diizinkan dan menyimpan katalog private sec
 git clone https://github.com/baska-pro/baska-hub.git
 cd baska-hub
 python3 scripts/audit_catalog.py
-python3 -m py_compile bin/baska baska_help.py baska_tui_v2.py baska_core_v2.py
+python3 -m py_compile bin/baska baska_help.py baska_tui_v2.py baska_simple_ui.py baska_core_v2.py baska_self_update.py
 ```
 
 Lihat [CONTRIBUTING.md](CONTRIBUTING.md) sebelum mengirim perubahan.
