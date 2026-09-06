@@ -8,6 +8,7 @@ on:
       - 'baska_help.py'
       - 'baska_tui_v2.py'
       - 'baska_core_v2.py'
+      - 'baska_self_update.py'
       - 'bin/baska'
       - 'bin/baska-core'
       - '.github/workflows/publish-pypi.yml'
@@ -88,6 +89,8 @@ jobs:
           /tmp/baska-test/bin/pip install dist/*.whl
           /tmp/baska-test/bin/baska --help >/dev/null
           /tmp/baska-test/bin/baska help install >/dev/null
+          /tmp/baska-test/bin/baska help upgrade >/dev/null
+          /tmp/baska-test/bin/baska upgrade --help >/dev/null
           /tmp/baska-test/bin/baska version
           /tmp/baska-test/bin/baska-core version
       - uses: actions/upload-artifact@v4
