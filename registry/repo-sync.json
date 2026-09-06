@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "owner": "baska-pro",
+  "exclude_repository_ids": [1358699949],
+  "next_id": 17,
+  "repositories": {
+    "1198591491": {"package_id": "00003", "full_name": "baska-pro/Arsip-Script"},
+    "1330478502": {"package_id": "00004", "full_name": "baska-pro/oracle-cloud"},
+    "1349152032": {"package_id": "00005", "full_name": "baska-pro/baska-pro"},
+    "1349185029": {"package_id": "00006", "full_name": "baska-pro/windows-shortcut-control"},
+    "1349269933": {"package_id": "00001", "full_name": "baska-pro/server-control-suite"},
+    "1349346037": {"package_id": "00007", "full_name": "baska-pro/bersihin"},
+    "1350156436": {"package_id": "00008", "full_name": "baska-pro/terminal-explorer"},
+    "1351117057": {"package_id": "00009", "full_name": "baska-pro/siskamling-digital"},
+    "1351157599": {"package_id": "00010", "full_name": "baska-pro/remotedroid-control"},
+    "1351971401": {"package_id": "00011", "full_name": "baska-pro/windows-app-locker"},
+    "1352034396": {"package_id": "00012", "full_name": "baska-pro/remotepc-pro"},
+    "1352068662": {"package_id": "00013", "full_name": "baska-pro/script-note"},
+    "1352148450": {"package_id": "00014", "full_name": "baska-pro/griya-kas"},
+    "1353373231": {"package_id": "00015", "full_name": "baska-pro/dhs-app"},
+    "1354456051": {"package_id": "00016", "full_name": "baska-pro/web-print-app"}
+  }
+}
