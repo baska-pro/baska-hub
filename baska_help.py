@@ -12,6 +12,8 @@ COMMANDS = {
     "outdated": ("baska outdated", "Periksa paket yang memiliki update."),
     "update": ("baska update <id|slug>", "Update satu paket."),
     "update-all": ("baska update-all", "Update semua paket yang dikelola BASKA."),
+    "upgrade": ("baska upgrade [--check|--force]", "Perbarui aplikasi BASKA sendiri ke versi terbaru."),
+    "self-update": ("baska self-update [--check|--force]", "Alias profesional untuk 'baska upgrade'."),
     "remove": ("baska remove <id|slug>", "Hapus paket dari direktori terkelola BASKA."),
     "repair": ("baska repair <id|slug>", "Pulihkan managed clone dan jalankan ulang installer paket."),
     "rollback": ("baska rollback <id|slug>", "Kembali ke commit yang tersimpan sebelum update terakhir."),
@@ -45,6 +47,18 @@ def show_help(command: str | None = None) -> None:
         print(f"\n{description}\n")
         print("PENGGUNAAN")
         print(f"  {usage}\n")
+        if command in ("upgrade", "self-update"):
+            print("OPSI")
+            print(_line("--check", "Hanya cek apakah versi baru tersedia."))
+            print(_line("-f, --force", "Paksa refresh/reinstall versi BASKA terbaru."))
+            print(_line("-q, --quiet", "Kurangi output saat proses upgrade."))
+            print(_line("-h, --help", "Tampilkan bantuan perintah."))
+            print("\nCONTOH")
+            print("  baska upgrade")
+            print("  baska upgrade --check")
+            print("  baska upgrade --force")
+            print("  baska self-update")
+            return
         print("OPSI UMUM")
         print(_line("-y, --yes", "Konfirmasi otomatis untuk operasi yang mendukungnya."))
         print(_line("-h, --help", "Tampilkan bantuan perintah."))
@@ -74,7 +88,7 @@ def show_help(command: str | None = None) -> None:
     groups = [
         ("JELAJAH", ["list", "search", "info"]),
         ("INSTALASI", ["install", "status", "repair", "remove", "rollback"]),
-        ("UPDATE", ["outdated", "update", "update-all", "versions"]),
+        ("UPDATE", ["outdated", "update", "update-all", "upgrade", "versions"]),
         ("KATALOG & KOLEKSI", ["refresh", "profile", "favorite", "notifications", "catalog"]),
         ("GITHUB & DIAGNOSIS", ["init", "logout", "doctor", "version"]),
     ]
@@ -98,6 +112,7 @@ def show_help(command: str | None = None) -> None:
         "baska info terminal-explorer",
         "baska outdated",
         "baska update-all",
+        "baska upgrade",
         "baska repair bersihin",
         "baska init",
     ):
@@ -105,4 +120,4 @@ def show_help(command: str | None = None) -> None:
 
     print("\nTIP")
     print("  Jalankan 'baska' tanpa argumen untuk navigasi dengan tombol arah dan Enter.")
-    print("  Jalankan 'baska help install' untuk bantuan khusus perintah install.")
+    print("  Gunakan 'baska upgrade' untuk memperbarui BASKA tanpa mengingat sintaks pip/pipx.")
