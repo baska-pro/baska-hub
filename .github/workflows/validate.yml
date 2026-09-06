@@ -19,6 +19,7 @@ jobs:
         run: |
           sh -n install.sh
           sh -n bin/baska
+          find recipes -type f -name '*.sh' -print0 | xargs -0 -r -n1 sh -n
 
       - name: Validate JSON
         run: |
@@ -28,32 +29,45 @@ jobs:
       - name: Validate registry
         run: |
           python3 - <<'PY'
-          import csv, json, pathlib, sys
+          import csv, json, pathlib, re
 
           root = pathlib.Path('.')
-          with open('manifest.json', encoding='utf-8') as f:
-              manifest = json.load(f)
-          with open('registry/packages.tsv', encoding='utf-8', newline='') as f:
+          manifest = json.loads((root / 'manifest.json').read_text(encoding='utf-8'))
+          with (root / 'registry/packages.tsv').open(encoding='utf-8', newline='') as f:
               rows = list(csv.DictReader(f, delimiter='\t'))
 
-          expected = {'id','name','category','type','version','platforms','path','action','sha256','description'}
+          expected = {'id','slug','aliases','name','category','type','version','platforms','source','action','sha256','description'}
           if not rows:
               raise SystemExit('registry kosong')
           if set(rows[0]) != expected:
               raise SystemExit(f'kolom registry tidak sesuai: {set(rows[0])}')
 
           ids = [r['id'] for r in rows]
+          slugs = [r['slug'] for r in rows]
           if len(ids) != len(set(ids)):
               raise SystemExit('ID registry duplikat')
+          if len(slugs) != len(set(slugs)):
+              raise SystemExit('slug registry duplikat')
+          for package_id in ids:
+              if not re.fullmatch(r'\d{5}', package_id):
+                  raise SystemExit(f'ID harus 5 digit: {package_id}')
 
-          manifest_ids = [p['id'] for p in manifest.get('packages', [])]
+          manifest_packages = manifest.get('packages', [])
+          manifest_ids = [p['id'] for p in manifest_packages]
           if set(ids) != set(manifest_ids):
               raise SystemExit('ID registry dan manifest tidak sinkron')
 
           for row in rows:
-              path = root / row['path']
-              if not path.exists():
-                  raise SystemExit(f"file tidak ditemukan: {row['path']}")
+              action = row['action']
+              source = row['source']
+              if action.startswith('recipe:'):
+                  recipe = root / action.split(':', 1)[1]
+                  if not recipe.is_file():
+                      raise SystemExit(f'recipe tidak ditemukan: {recipe}')
+              if not source.startswith(('https://', 'http://')):
+                  local_path = root / source
+                  if not local_path.exists():
+                      raise SystemExit(f'source lokal tidak ditemukan: {source}')
 
           print(f'OK: {len(rows)} paket tervalidasi')
           PY
