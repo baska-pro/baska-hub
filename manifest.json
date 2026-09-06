@@ -6,7 +6,7 @@
   "default_branch": "main",
   "cli": {
     "name": "baska",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "path": "bin/baska"
   },
   "registry": {
@@ -553,6 +553,7 @@
         "remote-monitoring",
         "remotedroid",
         "system-monitor",
+        "telegram",
         "telegram-fix",
         "termux",
         "termux-api"
@@ -593,13 +594,13 @@
       "type": "repo",
       "version": "v6.10.0",
       "platforms": [
-        "all"
+        "linux"
       ],
       "architectures": [
         "all"
       ],
       "source": "https://github.com/baska-pro/siskamling-digital.git",
-      "action": "git",
+      "action": "smart",
       "recipe": null,
       "sha256": null,
       "description": "Digital neighborhood security and patrol management PWA with FastAPI, attendance, GPS patrols, chat, SOS, Web Push, reports, backups and administration.",
@@ -885,7 +886,7 @@
         "all"
       ],
       "source": "https://github.com/baska-pro/windows-shortcut-control.git",
-      "action": "git",
+      "action": "smart",
       "recipe": null,
       "sha256": null,
       "description": "Portable PowerShell/WPF productivity launcher and Windows control center for shortcuts, system tools, monitoring, backup, and automation.",
@@ -968,7 +969,10 @@
       "updated_at": "2026-09-01T14:33:04Z",
       "pushed_at": "2026-09-01T13:54:29Z",
       "language": null,
-      "tags": [],
+      "tags": [
+        "profile",
+        "repository-only"
+      ],
       "dependencies": [
         "git"
       ],
