@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -eu
 
-VERSION="0.1.0"
+VERSION="0.2.0"
 REPO_OWNER="${BASKA_REPO_OWNER:-baska-pro}"
 REPO_NAME="${BASKA_REPO_NAME:-baska-hub}"
 BRANCH="${BASKA_REPO_BRANCH:-main}"
@@ -56,8 +56,16 @@ ensure_registry() {
 
 record() {
   ensure_registry
-  id="$1"
-  awk -F '\t' -v id="$id" 'NR>1 && $1==id {print; exit}' "$REGISTRY"
+  q="$1"
+  awk -F '\t' -v q="$q" '
+    NR > 1 {
+      if ($1 == q || $2 == q) { print; exit }
+      n = split($3, aliases, ",")
+      for (i = 1; i <= n; i++) {
+        if (aliases[i] == q) { print; exit }
+      }
+    }
+  ' "$REGISTRY"
 }
 
 field() {
@@ -88,40 +96,68 @@ verify_sha256() {
 
 list_packages() {
   ensure_registry
-  printf '%-18s %-16s %-10s %-12s %s\n' "ID" "NAMA" "KATEGORI" "VERSI" "PLATFORM"
-  printf '%-18s %-16s %-10s %-12s %s\n' "------------------" "----------------" "----------" "------------" "--------"
-  awk -F '\t' 'NR>1 {printf "%-18s %-16s %-10s %-12s %s\n",$1,$2,$3,$5,$6}' "$REGISTRY"
+  printf '%-7s %-20s %-18s %-10s %-12s %s\n' "ID" "SLUG" "NAMA" "KATEGORI" "VERSI" "PLATFORM"
+  printf '%-7s %-20s %-18s %-10s %-12s %s\n' "-------" "--------------------" "------------------" "----------" "------------" "--------"
+  awk -F '\t' 'NR>1 {printf "%-7s %-20s %-18s %-10s %-12s %s\n",$1,$2,$4,$5,$7,$8}' "$REGISTRY"
 }
 
 search_packages() {
   ensure_registry
   q="${1:-}"
   [ -n "$q" ] || fail "Gunakan: baska search <kata>"
-  awk -F '\t' -v q="$q" 'BEGIN{IGNORECASE=1} NR>1 && ($1~q || $2~q || $3~q || $10~q) {printf "%-18s %-16s %-10s %s\n",$1,$2,$3,$10}' "$REGISTRY"
+  awk -F '\t' -v q="$q" '
+    NR > 1 {
+      text = tolower($0)
+      needle = tolower(q)
+      if (index(text, needle))
+        printf "%-7s %-20s %-18s %s\n",$1,$2,$4,$12
+    }
+  ' "$REGISTRY"
 }
 
 info_package() {
-  id="${1:-}"; [ -n "$id" ] || fail "Gunakan: baska info <id>"
-  line="$(record "$id")"; [ -n "$line" ] || fail "Paket '$id' tidak ditemukan."
+  q="${1:-}"; [ -n "$q" ] || fail "Gunakan: baska info <id|nama>"
+  line="$(record "$q")"; [ -n "$line" ] || fail "Paket '$q' tidak ditemukan."
   say "ID          : $(field "$line" 1)"
-  say "Nama        : $(field "$line" 2)"
-  say "Kategori    : $(field "$line" 3)"
-  say "Tipe        : $(field "$line" 4)"
-  say "Versi       : $(field "$line" 5)"
-  say "Platform    : $(field "$line" 6)"
-  say "Path        : $(field "$line" 7)"
-  say "Aksi        : $(field "$line" 8)"
-  say "SHA-256     : $(field "$line" 9)"
-  say "Deskripsi   : $(field "$line" 10)"
+  say "Slug        : $(field "$line" 2)"
+  say "Alias       : $(field "$line" 3)"
+  say "Nama        : $(field "$line" 4)"
+  say "Kategori    : $(field "$line" 5)"
+  say "Tipe        : $(field "$line" 6)"
+  say "Versi       : $(field "$line" 7)"
+  say "Platform    : $(field "$line" 8)"
+  say "Sumber      : $(field "$line" 9)"
+  say "Aksi        : $(field "$line" 10)"
+  say "SHA-256     : $(field "$line" 11)"
+  say "Deskripsi   : $(field "$line" 12)"
+}
+
+ensure_git() {
+  command -v git >/dev/null 2>&1 || fail "git diperlukan untuk paket berbasis repository."
 }
 
 download_package() {
-  id="${1:-}"; requested="${2:-}"
-  [ -n "$id" ] || fail "Gunakan: baska get <id> [tujuan]"
-  line="$(record "$id")"; [ -n "$line" ] || fail "Paket '$id' tidak ditemukan."
-  path="$(field "$line" 7)"; sha="$(field "$line" 9)"; type="$(field "$line" 4)"
-  name="$(basename "$path")"
+  q="${1:-}"; requested="${2:-}"
+  [ -n "$q" ] || fail "Gunakan: baska get <id|nama> [tujuan]"
+  line="$(record "$q")"; [ -n "$line" ] || fail "Paket '$q' tidak ditemukan."
 
+  pid="$(field "$line" 1)"
+  slug="$(field "$line" 2)"
+  type="$(field "$line" 6)"
+  source="$(field "$line" 9)"
+  sha="$(field "$line" 11)"
+
+  if [ "$type" = "repo" ]; then
+    ensure_git
+    if [ -n "$requested" ]; then out="$requested"; else out="$PWD/$slug"; fi
+    [ ! -e "$out" ] || fail "Tujuan sudah ada: $out"
+    say "Meng-clone $slug ($pid)..."
+    git clone --depth 1 "$source" "$out"
+    say "$out"
+    return 0
+  fi
+
+  name="$(basename "$source")"
   if [ -n "$requested" ]; then
     if [ -d "$requested" ]; then out="$requested/$name"; else out="$requested"; fi
   elif [ "$type" = "apk" ] && [ -d "$HOME/storage/downloads" ]; then
@@ -131,40 +167,87 @@ download_package() {
   fi
 
   mkdir -p "$(dirname "$out")"
-  say "Mengunduh $id..."
-  fetch "$RAW_BASE/$path" "$out"
+  say "Mengunduh $slug ($pid)..."
+  fetch "$source" "$out"
   verify_sha256 "$out" "$sha"
   say "$out"
 }
 
 install_package() {
-  id="${1:-}"; [ -n "$id" ] || fail "Gunakan: baska install <id>"
-  line="$(record "$id")"; [ -n "$line" ] || fail "Paket '$id' tidak ditemukan."
-  targets="$(field "$line" 6)"; action="$(field "$line" 8)"; path="$(field "$line" 7)"; sha="$(field "$line" 9)"
-  compatible "$targets" || fail "Paket '$id' tidak ditandai kompatibel dengan platform $(platform)."
+  q="${1:-}"; [ -n "$q" ] || fail "Gunakan: baska install <id|nama>"
+  line="$(record "$q")"; [ -n "$line" ] || fail "Paket '$q' tidak ditemukan."
+
+  pid="$(field "$line" 1)"
+  slug="$(field "$line" 2)"
+  targets="$(field "$line" 8)"
+  source="$(field "$line" 9)"
+  action="$(field "$line" 10)"
+  sha="$(field "$line" 11)"
+
+  compatible "$targets" || fail "Paket '$slug' tidak kompatibel dengan platform $(platform)."
 
   case "$action" in
+    recipe:*)
+      recipe="${action#recipe:}"
+      tmp="$CACHE_DIR/recipe-${pid}.sh"
+      say "Mengambil recipe instalasi $slug..."
+      fetch "$RAW_BASE/$recipe" "$tmp"
+      chmod 700 "$tmp"
+      BASKA_PACKAGE_ID="$pid" \
+      BASKA_PACKAGE_SLUG="$slug" \
+      BASKA_PACKAGE_SOURCE="$source" \
+      BASKA_PACKAGE_HOME="$PACKAGES_DIR/$slug" \
+      sh "$tmp"
+      ;;
     open)
-      file="$(download_package "$id" | tail -n 1)"
-      if command -v termux-open >/dev/null 2>&1; then termux-open "$file"; say "Installer Android dibuka.";
-      elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$file" >/dev/null 2>&1 || true; say "File telah diunduh: $file";
-      else say "File telah diunduh: $file"; fi
+      file="$(download_package "$q" | tail -n 1)"
+      if command -v termux-open >/dev/null 2>&1; then
+        termux-open "$file"
+        say "Installer Android dibuka."
+      elif command -v xdg-open >/dev/null 2>&1; then
+        xdg-open "$file" >/dev/null 2>&1 || true
+        say "File telah diunduh: $file"
+      else
+        say "File telah diunduh: $file"
+      fi
       ;;
     executable)
-      dir="$PACKAGES_DIR/$id"; mkdir -p "$dir"; file="$dir/$(basename "$path")"
-      fetch "$RAW_BASE/$path" "$file"; verify_sha256 "$file" "$sha"; chmod 755 "$file"
+      dir="$PACKAGES_DIR/$slug"; mkdir -p "$dir"
+      file="$dir/$(basename "$source")"
+      fetch "$source" "$file"
+      verify_sha256 "$file" "$sha"
+      chmod 755 "$file"
       say "Terpasang: $file"
       ;;
+    git)
+      ensure_git
+      dir="$PACKAGES_DIR/$slug"
+      if [ -d "$dir/.git" ]; then
+        git -C "$dir" pull --ff-only
+      else
+        [ ! -e "$dir" ] || fail "Target sudah ada dan bukan repository: $dir"
+        git clone --depth 1 "$source" "$dir"
+      fi
+      say "Repository tersedia di: $dir"
+      ;;
     download|file)
-      download_package "$id" >/dev/null
+      download_package "$q" >/dev/null
       ;;
     *) fail "Aksi instalasi '$action' belum didukung CLI v$VERSION." ;;
   esac
 }
 
+update_command() {
+  if [ $# -gt 0 ]; then
+    install_package "$1"
+  else
+    refresh
+  fi
+}
+
 self_update() {
   target="$0"
-  [ -w "$target" ] || fail "Tidak dapat menulis $target. Jalankan installer bootstrap kembali bila diperlukan."
+  [ -w "$target" ] || fail "Tidak dapat menulis $target. Jalankan bootstrap installer kembali bila diperlukan."
   tmp="$CACHE_DIR/baska.new"
   fetch "$RAW_BASE/bin/baska" "$tmp"
   chmod 755 "$tmp"
@@ -181,6 +264,8 @@ doctor() {
   if command -v curl >/dev/null 2>&1; then say "Downloader   : curl";
   elif command -v wget >/dev/null 2>&1; then say "Downloader   : wget";
   else say "Downloader   : TIDAK ADA"; fi
+  if command -v git >/dev/null 2>&1; then say "Git          : tersedia"; else say "Git          : tidak tersedia"; fi
+  if command -v python3 >/dev/null 2>&1; then say "Python       : $(python3 --version 2>&1)"; fi
   if command -v termux-open >/dev/null 2>&1; then say "Android open : tersedia"; fi
 }
 
@@ -191,14 +276,21 @@ BASKA Hub CLI
 Penggunaan:
   baska list
   baska search <kata>
-  baska info <id>
-  baska get <id> [tujuan]
-  baska install <id>
+  baska info <id|nama>
+  baska get <id|nama> [tujuan]
+  baska install <id|nama>
+  baska update [id|nama]
   baska refresh
   baska self-update
   baska doctor
   baska version
   baska help
+
+Contoh:
+  baska install server-control
+  baska install 00001
+  baska install kuisingo
+  baska install 00002
 EOF
 }
 
@@ -210,7 +302,8 @@ case "$cmd" in
   info) info_package "$@" ;;
   get|download) download_package "$@" ;;
   install) install_package "$@" ;;
-  refresh|update) refresh ;;
+  update) update_command "$@" ;;
+  refresh) refresh ;;
   self-update) self_update ;;
   doctor) doctor ;;
   version|--version|-v) say "baska $VERSION" ;;
