@@ -3,6 +3,26 @@
 BASKA Hub adalah package/repository manager pribadi untuk Linux, Termux, dan terminal Windows.
 
 ## Install
+
+### Rekomendasi: pipx
+```bash
+pipx install baska
+baska
+```
+
+### pip
+```bash
+python -m pip install baska
+baska
+```
+
+### Langsung dari GitHub (tanpa menunggu rilis PyPI)
+```bash
+python -m pip install "git+https://github.com/baska-pro/baska-hub.git"
+baska
+```
+
+### Bootstrap shell lama
 ```bash
 curl -fsSL https://raw.githubusercontent.com/baska-pro/baska-hub/main/install.sh | sh
 baska
