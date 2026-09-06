@@ -661,6 +661,7 @@
       "type": "repo",
       "version": "v3.0.0",
       "platforms": [
+        "linux",
         "termux"
       ],
       "architectures": [
@@ -732,7 +733,7 @@
       "type": "repo",
       "version": "v2.0.1",
       "platforms": [
-        "windows"
+        "all"
       ],
       "architectures": [
         "all"
