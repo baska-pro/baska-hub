@@ -1,73 +1,43 @@
-name: Validate Hub
-
+name: Validate BASKA Hub
 on:
   push:
     branches: [main]
   pull_request:
-
 permissions:
   contents: read
-
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Validate shell syntax
+      - uses: actions/checkout@v4
+      - name: Syntax checks
         run: |
           sh -n install.sh
-          sh -n bin/baska
+          python3 -m py_compile bin/baska scripts/sync_repositories.py
           find recipes -type f -name '*.sh' -print0 | xargs -0 -r -n1 sh -n
-
-      - name: Validate JSON
+      - name: JSON checks
         run: |
           python3 -m json.tool manifest.json >/dev/null
-          python3 -m json.tool apps/android/kuisingo/package.json >/dev/null
-
-      - name: Validate registry
+          python3 -m json.tool registry/catalog.json >/dev/null
+          python3 -m json.tool registry/repo-sync.json >/dev/null
+          python3 -m json.tool registry/overrides.json >/dev/null
+          python3 -m json.tool registry/assets.json >/dev/null
+          python3 -m json.tool registry/collections.json >/dev/null
+      - name: Registry policy checks
         run: |
           python3 - <<'PY'
-          import csv, json, pathlib, re
-
-          root = pathlib.Path('.')
-          manifest = json.loads((root / 'manifest.json').read_text(encoding='utf-8'))
-          with (root / 'registry/packages.tsv').open(encoding='utf-8', newline='') as f:
-              rows = list(csv.DictReader(f, delimiter='\t'))
-
-          expected = {'id','slug','aliases','name','category','type','version','platforms','source','action','sha256','description'}
-          if not rows:
-              raise SystemExit('registry kosong')
-          if set(rows[0]) != expected:
-              raise SystemExit(f'kolom registry tidak sesuai: {set(rows[0])}')
-
-          ids = [r['id'] for r in rows]
-          slugs = [r['slug'] for r in rows]
-          if len(ids) != len(set(ids)):
-              raise SystemExit('ID registry duplikat')
-          if len(slugs) != len(set(slugs)):
-              raise SystemExit('slug registry duplikat')
-          for package_id in ids:
-              if not re.fullmatch(r'\d{5}', package_id):
-                  raise SystemExit(f'ID harus 5 digit: {package_id}')
-
-          manifest_packages = manifest.get('packages', [])
-          manifest_ids = [p['id'] for p in manifest_packages]
-          if set(ids) != set(manifest_ids):
-              raise SystemExit('ID registry dan manifest tidak sinkron')
-
-          for row in rows:
-              action = row['action']
-              source = row['source']
-              if action.startswith('recipe:'):
-                  recipe = root / action.split(':', 1)[1]
-                  if not recipe.is_file():
-                      raise SystemExit(f'recipe tidak ditemukan: {recipe}')
-              if not source.startswith(('https://', 'http://')):
-                  local_path = root / source
-                  if not local_path.exists():
-                      raise SystemExit(f'source lokal tidak ditemukan: {source}')
-
-          print(f'OK: {len(rows)} paket tervalidasi')
+          import csv,json,pathlib,re
+          root=pathlib.Path('.');catalog=json.loads((root/'registry/catalog.json').read_text());packages=catalog['packages'];ids=[p['id'] for p in packages];slugs=[p['slug'] for p in packages]
+          assert len(ids)==len(set(ids));assert len(slugs)==len(set(slugs))
+          for p in packages:
+              assert re.fullmatch(r'(?:\d{5}|A\d{5})',p['id']);assert p.get('visibility')!='private'
+          state=json.loads((root/'registry/repo-sync.json').read_text());raw=json.dumps(state)
+          assert 'Arsip-Script' not in raw and '/oracle-cloud' not in raw
+          with (root/'registry/packages.tsv').open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f,delimiter='\t'))
+          assert {r['id'] for r in rows}==set(ids)
+          print(f'OK: {len(packages)} public packages')
           PY
+      - name: CLI smoke test
+        run: |
+          python3 bin/baska version
+          BASKA_HOME="$RUNNER_TEMP/baska-test" python3 bin/baska doctor

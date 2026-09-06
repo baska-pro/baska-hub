@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "collections": {
+    "server": {"name":"Server","description":"Tools for VPS/server management and terminal work.","members":["server-control","terminal-explorer"]},
+    "windows": {"name":"Windows","description":"Windows utilities and remote tools.","members":["web-print-app","remotepc-pro","windows-app-locker","windows-shortcut-control","bersihin"]},
+    "termux": {"name":"Termux","description":"Packages useful from Android/Termux.","members":["kuisingo","terminal-explorer","remotedroid-control"]},
+    "development": {"name":"Development","description":"Development and script tools.","members":["terminal-explorer","script-note","baska-pro"]},
+    "monitoring": {"name":"Monitoring","description":"Monitoring and remote administration.","members":["server-control","remotepc-pro"]}
+  }
+}

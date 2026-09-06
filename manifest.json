@@ -1,35 +1,12 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "name": "BASKA Hub",
   "slug": "baska-hub",
   "owner": "baska-pro",
   "default_branch": "main",
-  "cli": {
-    "name": "baska",
-    "version": "0.2.0",
-    "path": "bin/baska"
-  },
-  "registry": "registry/packages.tsv",
-  "repo_sync": {
-    "state": "registry/repo-sync.json",
-    "workflow": ".github/workflows/sync-repositories.yml"
-  },
-  "packages": [
-    {"id":"00001","slug":"server-control","aliases":["server-control-suite","servercontrol"],"name":"Server Control Suite","category":"tools","type":"repo","version":"4.0.0","platforms":["linux"],"source":"https://github.com/baska-pro/server-control-suite.git","install":{"action":"recipe","recipe":"recipes/server-control.sh"},"sha256":null,"description":"Remote management server Linux dari repo baska-pro/server-control-suite."},
-    {"id":"00002","slug":"kuisingo","aliases":["kuis","kuisingo-app"],"name":"KuisinGo","category":"apps","type":"apk","version":"01.0712.00","platforms":["termux"],"source":"https://raw.githubusercontent.com/baska-pro/baska-hub/main/apps/android/kuisingo/KuisinGo_01.0712.00.apk","install":{"action":"open","requires_confirmation":true},"sha256":null,"description":"Paket APK KuisinGo untuk Android."},
-    {"id":"00003","slug":"arsip-script","aliases":["arsipscript"],"name":"Arsip-Script","category":"repositories","type":"repo","version":"repo","platforms":["all"],"source":"https://github.com/baska-pro/Arsip-Script.git","install":{"action":"git"},"sha256":null,"description":"Repository privat baska-pro/Arsip-Script; baska install akan clone/update repository."},
-    {"id":"00004","slug":"oracle-cloud","aliases":["oraclecloud"],"name":"oracle-cloud","category":"repositories","type":"repo","version":"repo","platforms":["all"],"source":"https://github.com/baska-pro/oracle-cloud.git","install":{"action":"git"},"sha256":null,"description":"Repository privat baska-pro/oracle-cloud; baska install akan clone/update repository."},
-    {"id":"00005","slug":"baska-pro","aliases":["baskapro"],"name":"baska-pro","category":"repositories","type":"repo","version":"repo","platforms":["all"],"source":"https://github.com/baska-pro/baska-pro.git","install":{"action":"git"},"sha256":null,"description":"Repository publik baska-pro/baska-pro; baska install akan clone/update repository."},
-    {"id":"00006","slug":"windows-shortcut-control","aliases":["windowsshortcutcontrol"],"name":"windows-shortcut-control","category":"repositories","type":"repo","version":"repo","platforms":["all"],"source":"https://github.com/baska-pro/windows-shortcut-control.git","install":{"action":"git"},"sha256":null,"description":"Repository publik baska-pro/windows-shortcut-control; baska install akan clone/update repository."},
-    {"id":"00007","slug":"bersihin","aliases":["bersihin"],"name":"bersihin","category":"repositories","type":"repo","version":"repo","platforms":["all"],"source":"https://github.com/baska-pro/bersihin.git","install":{"action":"git"},"sha256":null,"description":"Repository publik baska-pro/bersihin; baska install akan clone/update repository."},
-    {"id":"00008","slug":"terminal-explorer","aliases":["terminalexplorer"],"name":"terminal-explorer","category":"repositories","type":"repo","version":"repo","platforms":["all"],"source":"https://github.com/baska-pro/terminal-explorer.git","install":{"action":"git"},"sha256":null,"description":"Repository publik baska-pro/terminal-explorer; baska install akan clone/update repository."},
-    {"id":"00009","slug":"siskamling-digital","aliases":["siskamlingdigital"],"name":"siskamling-digital","category":"repositories","type":"repo","version":"repo","platforms":["all"],"source":"https://github.com/baska-pro/siskamling-digital.git","install":{"action":"git"},"sha256":null,"description":"Repository publik baska-pro/siskamling-digital; baska install akan clone/update repository."},
-    {"id":"00010","slug":"remotedroid-control","aliases":["remotedroidcontrol"],"name":"remotedroid-control","category":"repositories","type":"repo","version":"repo","platforms":["all"],"source":"https://github.com/baska-pro/remotedroid-control.git","install":{"action":"git"},"sha256":null,"description":"Repository publik baska-pro/remotedroid-control; baska install akan clone/update repository."},
-    {"id":"00011","slug":"windows-app-locker","aliases":["windowsapplocker"],"name":"windows-app-locker","category":"repositories","type":"repo","version":"repo","platforms":["all"],"source":"https://github.com/baska-pro/windows-app-locker.git","install":{"action":"git"},"sha256":null,"description":"Repository publik baska-pro/windows-app-locker; baska install akan clone/update repository."},
-    {"id":"00012","slug":"remotepc-pro","aliases":["remotepcpro"],"name":"remotepc-pro","category":"repositories","type":"repo","version":"repo","platforms":["all"],"source":"https://github.com/baska-pro/remotepc-pro.git","install":{"action":"git"},"sha256":null,"description":"Repository publik baska-pro/remotepc-pro; baska install akan clone/update repository."},
-    {"id":"00013","slug":"script-note","aliases":["scriptnote"],"name":"script-note","category":"repositories","type":"repo","version":"repo","platforms":["all"],"source":"https://github.com/baska-pro/script-note.git","install":{"action":"git"},"sha256":null,"description":"Repository publik baska-pro/script-note; baska install akan clone/update repository."},
-    {"id":"00014","slug":"griya-kas","aliases":["griyakas"],"name":"griya-kas","category":"repositories","type":"repo","version":"repo","platforms":["all"],"source":"https://github.com/baska-pro/griya-kas.git","install":{"action":"git"},"sha256":null,"description":"Repository publik baska-pro/griya-kas; baska install akan clone/update repository."},
-    {"id":"00015","slug":"dhs-app","aliases":["dhsapp"],"name":"dhs-app","category":"repositories","type":"repo","version":"repo","platforms":["all"],"source":"https://github.com/baska-pro/dhs-app.git","install":{"action":"git"},"sha256":null,"description":"Repository publik baska-pro/dhs-app; baska install akan clone/update repository."},
-    {"id":"00016","slug":"web-print-app","aliases":["webprintapp"],"name":"web-print-app","category":"repositories","type":"repo","version":"repo","platforms":["all"],"source":"https://github.com/baska-pro/web-print-app.git","install":{"action":"git"},"sha256":null,"description":"Repository publik baska-pro/web-print-app; baska install akan clone/update repository."}
-  ]
+  "cli": {"name":"baska","version":"1.0.0","path":"bin/baska"},
+  "registry": {"catalog":"registry/catalog.json","index":"registry/packages.tsv","collections":"registry/collections.json","public_state":"registry/repo-sync.json","private":"local-only via baska init"},
+  "id_policy": {"public":"5 digit chronology sequence; current newest anchor 50000, future repos increment","private":"Pxxxxx local-only","assets":"Axxxxx"},
+  "features": ["interactive-dashboard","smart-installer","platform-detection","install-update-remove-status-repair-rollback","version-management","dependency-resolver","release-first","sha256-provenance","categories-tags","profiles-collections","web-catalog"],
+  "packages": []
 }

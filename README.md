@@ -1,69 +1,43 @@
 # BASKA Hub
 
-Pusat distribusi pribadi untuk **tools, scripts, aplikasi, media, konfigurasi, template, dan paket** yang dapat diakses dari Linux maupun Termux melalui satu CLI: `baska`.
+BASKA Hub adalah package/repository manager pribadi untuk Linux, Termux, dan terminal Windows.
 
-## Instalasi cepat
-
+## Install
 ```bash
 curl -fsSL https://raw.githubusercontent.com/baska-pro/baska-hub/main/install.sh | sh
+baska
 ```
 
-Setelah terpasang:
+`baska` tanpa argumen membuka dashboard terminal interaktif.
 
+## Command
 ```bash
 baska list
 baska search <kata>
-baska info <id>
-baska install <id>
-baska get <id>
+baska info <id|slug>
+baska install <id|slug>[@tag]
+baska status
+baska outdated
+baska update <id|slug>
+baska update-all
+baska remove <id|slug>
+baska repair <id|slug>
+baska rollback <id|slug>
+baska versions <id|slug>
+baska profile list
+baska profile setup server
+baska favorite add <id|slug>
+baska notifications
+baska init
 baska refresh
-baska self-update
 baska doctor
 ```
 
-Contoh:
+## ID policy
+Public repo memakai 5 digit dengan anchor 50000 untuk repo terbaru saat migrasi. Repo lama turun 49999, 49998, dst. Repo publik baru berikutnya mendapat 50001, 50002, dst. Repo private memakai Pxxxxx dan hanya dibuat lokal setelah baska init. Asset memakai Axxxxx.
 
-```bash
-baska info kuisingo
-baska install kuisingo
-```
+## Private repository
+Metadata private tidak disimpan di katalog publik. `baska init` memverifikasi akun GitHub lokal dan hanya menampilkan private repo bila akun terautentikasi adalah `baska-pro`.
 
-> Pada Android/Termux, APK akan diunduh lalu dibuka melalui Android Package Installer jika `termux-open` tersedia. Android tetap dapat meminta konfirmasi instalasi.
-
-## Struktur repository
-
-```text
-baska-hub/
-├── apps/                 # APK dan aplikasi
-├── tools/                # Tool siap pakai
-├── scripts/              # Script Bash/Python/utility
-├── media/                # Gambar, icon, wallpaper, dan media
-├── configs/              # Template konfigurasi aman tanpa secret
-├── templates/            # Template proyek/file
-├── registry/             # Registry yang dibaca CLI
-├── docs/                 # Dokumentasi
-├── bin/baska             # CLI universal
-├── manifest.json         # Manifest machine-readable
-└── install.sh            # Bootstrap installer
-```
-
-## Prinsip repository
-
-- Satu ID unik untuk setiap paket.
-- File sensitif seperti token, password, `.env`, private key, dan credential tidak boleh disimpan.
-- File besar sebaiknya dipindahkan ke GitHub Releases ketika repository mulai berkembang.
-- Paket yang dapat dieksekusi sebaiknya memiliki SHA-256 di registry sebelum didistribusikan luas.
-- `manifest.json` adalah katalog terstruktur; `registry/packages.tsv` adalah registry ringan yang dibaca CLI tanpa `jq` atau Python.
-
-## Platform
-
-Target utama:
-
-- Android + Termux
-- Ubuntu / Debian
-- Linux umum
-- ARM64 / x86_64 selama paket terkait kompatibel
-
-## Status
-
-BASKA Hub saat ini menggunakan schema registry **v1** dan CLI **v0.1.0**.
+## Fitur
+Dashboard interaktif, auto-sync public repos, smart installer, platform/arch detection, install/update/remove/status/repair/rollback, version pinning, dependency resolver, release metadata, SHA-256/provenance, tags/categories, profiles, favorites, notifications, dan web catalog.

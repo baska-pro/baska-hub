@@ -1,43 +1,37 @@
-name: Sync BASKA Repositories
-
+name: Sync BASKA Catalog
 on:
   workflow_dispatch:
   schedule:
     - cron: '17 * * * *'
-
+  push:
+    branches: [main]
+    paths: ['registry/overrides.json','registry/assets.json','scripts/sync_repositories.py']
 permissions:
   contents: write
-
 concurrency:
-  group: baska-repository-sync
+  group: baska-public-catalog-sync
   cancel-in-progress: false
-
 jobs:
   sync:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Sync repositories into registry
+      - uses: actions/checkout@v4
+      - name: Build public catalog
         env:
-          BASKA_GH_PAT: ${{ secrets.BASKA_GH_PAT }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: python3 scripts/sync_repositories.py
-
-      - name: Validate generated files
+      - name: Validate generated catalog
         run: |
-          python3 -m json.tool manifest.json >/dev/null
+          python3 -m json.tool registry/catalog.json >/dev/null
           python3 -m json.tool registry/repo-sync.json >/dev/null
-          sh -n bin/baska
-
+          python3 -m json.tool manifest.json >/dev/null
+          python3 -m py_compile bin/baska scripts/sync_repositories.py
       - name: Commit catalog changes
         run: |
-          if git diff --quiet -- registry/packages.tsv registry/repo-sync.json manifest.json; then
-            echo 'Catalog already current.'
-            exit 0
-          fi
-          git config user.name 'baska-hub-bot'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add registry/packages.tsv registry/repo-sync.json manifest.json
-          git commit -m 'chore: auto-sync repository catalog'
+          if git diff --quiet -- registry/packages.tsv registry/catalog.json registry/repo-sync.json manifest.json; then echo "Catalog already current."; exit 0; fi
+          git config user.name "baska-hub-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add registry/packages.tsv registry/catalog.json registry/repo-sync.json manifest.json
+          git commit -m "chore: auto-sync public BASKA catalog"
           git push

@@ -1,60 +1,40 @@
-# Penggunaan BASKA CLI
+# BASKA CLI Usage
 
-## Instalasi
+Jalankan `baska` untuk dashboard. Direct command tetap tersedia.
 
+## Install dan versi
 ```bash
-curl -fsSL https://raw.githubusercontent.com/baska-pro/baska-hub/main/install.sh | sh
+baska install server-control
+baska install 49990
+baska install server-control@linux-v4.0.0
+baska versions server-control
 ```
 
-## Command utama
-
+## Lifecycle
 ```bash
+baska status
+baska outdated
+baska update server-control
+baska update-all
+baska rollback server-control
+baska repair server-control
+baska remove server-control
+```
+
+## Private
+```bash
+baska init
 baska list
-baska search apk
-baska info kuisingo
-baska install kuisingo
-baska get kuisingo
-baska refresh
-baska self-update
-baska doctor
+baska logout
 ```
+Private repo muncul sebagai Pxxxxx hanya setelah autentikasi akun baska-pro.
 
-### `baska list`
-Menampilkan semua paket yang terdaftar.
-
-### `baska search <kata>`
-Mencari berdasarkan ID, nama, kategori, atau deskripsi.
-
-### `baska info <id>`
-Menampilkan metadata paket.
-
-### `baska get <id> [tujuan]`
-Mengunduh file tanpa melakukan aksi instalasi.
-
-### `baska install <id>`
-Melakukan aksi sesuai registry. Untuk APK pada Termux, file diunduh ke storage Android jika tersedia lalu dibuka melalui Package Installer.
-
-### `baska refresh`
-Mengambil registry terbaru dari GitHub.
-
-### `baska self-update`
-Memperbarui executable CLI dari branch utama.
-
-### `baska doctor`
-Menampilkan platform, arsitektur, downloader, lokasi data, dan repository aktif.
-
-## Override repository
-
-Untuk pengujian branch atau fork:
-
+## Profiles
 ```bash
-BASKA_REPO_BRANCH=nama-branch baska refresh
+baska profile list
+baska profile show windows
+baska profile setup windows
 ```
 
-Variabel yang tersedia:
-
-- `BASKA_REPO_OWNER`
-- `BASKA_REPO_NAME`
-- `BASKA_REPO_BRANCH`
-- `BASKA_HOME`
-- `BASKA_BIN_DIR` untuk bootstrap Linux
+## Smart installer
+Mendeteksi install.sh, install.ps1, requirements*.txt, pyproject.toml/setup.py, package.json, Docker Compose dan Dockerfile. Paket reviewed meminta konfirmasi sebelum eksekusi.
