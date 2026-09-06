@@ -2,7 +2,7 @@
   "schema_version": 3,
   "name": "BASKA Hub Catalog",
   "owner": "baska-pro",
-  "generated_at": "2026-09-06T07:06:47Z",
+  "generated_at": "2026-09-06T11:38:35Z",
   "private_policy": "Private repositories are never stored in this public catalog; they are discovered locally by `baska init`.",
   "packages": [
     {
@@ -14,7 +14,7 @@
       "name": "shopping-list",
       "category": "repositories",
       "type": "repo",
-      "version": "repo",
+      "version": "v2.1.0",
       "platforms": [
         "all"
       ],
@@ -22,26 +22,66 @@
         "all"
       ],
       "source": "https://github.com/baska-pro/shopping-list.git",
-      "action": "git",
+      "action": "smart",
       "recipe": null,
       "sha256": null,
-      "description": "Public repository baska-pro/shopping-list.",
+      "description": "Offline-first smart shopping list PWA with recipes, voice input, price history, Google Sheets sync, Supabase sync, and WhatsApp sharing.",
       "visibility": "public",
       "trust": "reviewed",
-      "status": "repository_only",
+      "status": "ready",
       "repository_id": 1358854781,
       "created_at": "2026-09-06T06:28:48Z",
-      "updated_at": "2026-09-06T06:38:45Z",
-      "pushed_at": "2026-09-06T07:05:15Z",
-      "language": null,
-      "tags": [],
-      "dependencies": [
-        "git"
+      "updated_at": "2026-09-06T10:53:10Z",
+      "pushed_at": "2026-09-06T10:53:06Z",
+      "language": "TypeScript",
+      "tags": [
+        "bun",
+        "google-apps-script",
+        "google-sheets",
+        "grocery-list",
+        "localstorage",
+        "node",
+        "offline-first",
+        "progressive-web-app",
+        "pwa",
+        "react",
+        "recipes",
+        "shopping",
+        "shopping-list",
+        "supabase",
+        "typescript",
+        "vite",
+        "voice-input",
+        "whatsapp"
       ],
-      "installer_indicators": [],
+      "dependencies": [
+        "git",
+        "node",
+        "npm"
+      ],
+      "installer_indicators": [
+        "node"
+      ],
       "default_branch": "main",
-      "latest_release": null,
-      "preferred_delivery": "git",
+      "latest_release": {
+        "tag_name": "v2.1.0",
+        "name": "Shopping List v2.1.0",
+        "published_at": "2026-09-06T09:36:47Z",
+        "html_url": "https://github.com/baska-pro/shopping-list/releases/tag/v2.1.0",
+        "assets": [
+          {
+            "name": "shopping-list-v2.1.0-SHA256SUMS.txt",
+            "size": 99,
+            "download_url": "https://github.com/baska-pro/shopping-list/releases/download/v2.1.0/shopping-list-v2.1.0-SHA256SUMS.txt"
+          },
+          {
+            "name": "shopping-list-v2.1.0.zip",
+            "size": 156543,
+            "download_url": "https://github.com/baska-pro/shopping-list/releases/download/v2.1.0/shopping-list-v2.1.0.zip"
+          }
+        ]
+      },
+      "preferred_delivery": "release",
       "homepage": null,
       "archived": false
     },
