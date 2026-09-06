@@ -10,7 +10,7 @@ import time
 from importlib.machinery import SourceFileLoader
 from pathlib import Path
 
-VERSION = "1.2.0"
+VERSION = "1.2.1"
 
 
 def _legacy_path() -> Path:
@@ -147,7 +147,6 @@ def _smart_plan(core, path: Path) -> list[dict]:
     setup_py = path / "setup.py"
     if reqs or pyproject.exists() or setup_py.exists():
         preferred = None
-        names = [p.name.lower() for p in reqs]
         if platform == "windows":
             for p in reqs:
                 if "windows" in p.name.lower():
@@ -209,9 +208,7 @@ def _smart_plan(core, path: Path) -> list[dict]:
             })
 
     if not plan and platform == "windows":
-        cmd_files = [p for p in path.glob("*.cmd") if p.is_file()]
-        bat_files = [p for p in path.glob("*.bat") if p.is_file()]
-        candidates = cmd_files + bat_files
+        candidates = [p for p in [*path.glob("*.cmd"), *path.glob("*.bat")] if p.is_file()]
         if candidates:
             preferred = max(candidates, key=lambda p: p.stat().st_size)
             plan.append({
@@ -221,6 +218,10 @@ def _smart_plan(core, path: Path) -> list[dict]:
                 "script": preferred.name,
             })
     return plan
+
+
+def shlex_quote(value: str) -> str:
+    return "'" + value.replace("'", "'\\''") + "'"
 
 
 def _install_shell_entrypoint(core, package: dict, path: Path, item: dict) -> None:
@@ -242,10 +243,6 @@ def _install_shell_entrypoint(core, package: dict, path: Path, item: dict) -> No
     print(core.color("green", f"Command siap: {wrapper}"))
 
 
-def shlex_quote(value: str) -> str:
-    return "'" + value.replace("'", "'\\''") + "'"
-
-
 def _install_windows_entrypoint(core, package: dict, path: Path, item: dict) -> None:
     local = Path(os.getenv("LOCALAPPDATA", str(Path.home()))) / "BASKA" / "bin"
     local.mkdir(parents=True, exist_ok=True)
@@ -263,7 +260,7 @@ def _run_smart_install(core, package: dict, path: Path, assume_yes: bool = False
         return
     plan = _smart_plan(core, path)
     if not plan:
-        print(core.color("green", "Repository berhasil dipasang (repository-only)."))
+        print(core.color("green", "Repository berhasil dipasang sebagai managed clone (repository-only)."))
         return
 
     print(core.color("cyan", "Rencana instalasi:"))
@@ -273,94 +270,52 @@ def _run_smart_install(core, package: dict, path: Path, assume_yes: bool = False
     trust = package.get("trust", "reviewed")
     allowed = assume_yes or trust == "trusted"
     if not allowed:
-        allowed = core.confirm("Jalankan rencana instalasi di atas?")
+        allowed = core.confirm("Lanjutkan instalasi?")
     if not allowed:
-        print("Eksekusi installer dilewati. Repository tetap terpasang.")
+        print("Installer dilewati. Repository tetap tersedia sebagai managed clone.")
         return
 
-    try:
-        for item in plan:
-            for dep in item.get("deps", []):
-                if dep == "bash" and not core.command_exists("bash"):
-                    if core.detect_platform() == "termux" and core.command_exists("pkg"):
-                        core.run(["pkg", "install", "-y", "bash"])
-                    elif core.command_exists("apt-get"):
-                        prefix = [] if getattr(os, "geteuid", lambda: 1)() == 0 else (["sudo"] if core.command_exists("sudo") else [])
-                        core.run(prefix + ["apt-get", "install", "-y", "bash"])
-                    else:
-                        raise SystemExit("Bash diperlukan tetapi tidak tersedia.")
-                elif dep != "bash" and not core.ensure_dependency(dep, assume_yes=assume_yes):
-                    raise SystemExit(f"Dependency '{dep}' belum tersedia.")
-
-            kind = item["kind"]
-            if kind == "python":
+    for item in plan:
+        for dep in item.get("deps", []):
+            if not core.ensure_dependency(dep, assume_yes=assume_yes):
+                raise SystemExit(f"Dependency '{dep}' belum tersedia.")
+        try:
+            if item["kind"] == "python":
                 core.execute_python_plan(path, item)
-            elif kind == "shell-entrypoint":
+            elif item["kind"] == "shell-entrypoint":
                 _install_shell_entrypoint(core, package, path, item)
-            elif kind == "windows-entrypoint":
+            elif item["kind"] == "windows-entrypoint":
                 _install_windows_entrypoint(core, package, path, item)
             else:
                 core.run(item["cmd"], cwd=path)
+        except subprocess.CalledProcessError as exc:
+            cmd = " ".join(str(x) for x in (exc.cmd if isinstance(exc.cmd, (list, tuple)) else [exc.cmd]))
+            raise SystemExit(f"Installer gagal (exit {exc.returncode}): {cmd}") from None
+
+
+def _execute_recipe(core, package: dict, path: Path, assume_yes: bool = False) -> None:
+    recipe = package.get("recipe")
+    if not recipe:
+        action = package.get("action", "")
+        if action.startswith("recipe:"):
+            recipe = action.split(":", 1)[1]
+    if not recipe:
+        return
+    tmp = core.CACHE / f"recipe-{package['id']}.sh"
+    core.download(f"{core.RAW_BASE}/{recipe}", tmp)
+    tmp.chmod(0o700)
+    env = os.environ.copy()
+    env.update({
+        "BASKA_PACKAGE_ID": str(package["id"]),
+        "BASKA_PACKAGE_SLUG": package["slug"],
+        "BASKA_PACKAGE_SOURCE": package["source"],
+        "BASKA_PACKAGE_HOME": str(path),
+        "BASKA_ASSUME_YES": "1" if assume_yes else "0",
+    })
+    try:
+        core.run(["sh", str(tmp)], env=env)
     except subprocess.CalledProcessError as exc:
-        cmd = " ".join(str(x) for x in (exc.cmd if isinstance(exc.cmd, (list, tuple)) else [exc.cmd]))
-        raise SystemExit(f"Installer gagal (exit {exc.returncode}): {cmd}") from None
-
-
-def _clone_or_update(core, package: dict, requested_ref: str | None = None):
-    if not core.command_exists("git"):
-        if not core.ensure_dependency("git", assume_yes=False):
-            raise SystemExit("Git diperlukan untuk memasang repository.")
-    slug = package["slug"]
-    target = core.PACKAGES / slug
-    env = core.private_git_env(package)
-    source = package["source"]
-    chosen_ref = core.choose_ref(package, requested_ref)
-
-    if target.exists() and not (target / ".git").exists():
-        if _is_managed(core, target):
-            backup = core.HOME / "backups" / slug / (time.strftime("%Y%m%d-%H%M%S") + "-broken")
-            backup.parent.mkdir(parents=True, exist_ok=True)
-            shutil.move(str(target), str(backup))
-            print(core.color("yellow", f"Folder instalasi rusak dipindahkan ke: {backup}"))
-        else:
-            raise SystemExit(f"{target} sudah ada tetapi bukan Git repository.")
-
-    if not target.exists():
-        core.run(["git", "clone", "--depth", "1", source, str(target)], env=env)
-    else:
-        _backup_and_clean(core, target, slug)
-        core.run(["git", "fetch", "--all", "--tags", "--prune"], cwd=target, env=env)
-
-    previous = core.git_head(target)
-    if chosen_ref:
-        core.run(["git", "fetch", "--tags", "origin"], cwd=target, env=env, check=False)
-        core.run(["git", "checkout", "--detach", chosen_ref], cwd=target, env=env)
-    else:
-        branch = core.git_default_branch(target, env)
-        if branch:
-            core.run(["git", "checkout", branch], cwd=target, env=env, check=False)
-            core.run(["git", "reset", "--hard", f"origin/{branch}"], cwd=target, env=env, check=False)
-    return target, previous
-
-
-def _repair(core, query: str, assume_yes: bool = False) -> None:
-    package = core.resolve_package(query)
-    if not package:
-        raise SystemExit("Paket tidak ditemukan.")
-    state = core.state()
-    item = state.get("installed", {}).get(package["slug"])
-    path = Path(item["path"]) if item and item.get("path") else core.PACKAGES / package["slug"]
-    if not path.exists():
-        return core.install_command(query, assume_yes=assume_yes)
-    if (path / ".git").exists():
-        _backup_and_clean(core, path, package["slug"])
-        core.run(["git", "fsck", "--no-progress"], cwd=path, check=False)
-    action = package.get("action", "smart")
-    if action.startswith("recipe") or package.get("recipe"):
-        core.execute_recipe(package, path, assume_yes=assume_yes)
-    elif action == "smart":
-        _run_smart_install(core, package, path, assume_yes=assume_yes)
-    print(core.color("green", f"Repair selesai: {package['slug']}"))
+        raise SystemExit(f"Recipe gagal (exit {exc.returncode}): {recipe}") from None
 
 
 def _compatible(core, package: dict) -> bool:
@@ -369,77 +324,146 @@ def _compatible(core, package: dict) -> bool:
     return "all" in supported or current in supported
 
 
+def _install_command(core, target: str, assume_yes: bool = False) -> None:
+    name, requested_ref = core.split_target(target)
+    package = core.resolve_package(name)
+    if not package:
+        raise SystemExit(f"Paket '{name}' tidak ditemukan.")
+    if not _compatible(core, package):
+        supported = ", ".join(package.get("platforms") or ["all"])
+        raise SystemExit(
+            f"{package['slug']} tidak mendukung platform {core.detect_platform()}. "
+            f"Platform paket: {supported}."
+        )
+    if package.get("visibility") == "private" and not core.private_enabled():
+        raise SystemExit("Repo private hanya tersedia setelah 'baska init'.")
+
+    if package.get("type") != "repo":
+        core.install_file_package(package)
+        core.record_install(package, None, None, requested_ref)
+        return
+
+    target_path = core.PACKAGES / package["slug"]
+    if target_path.exists() and (target_path / ".git").exists():
+        _backup_and_clean(core, target_path, package["slug"])
+
+    path, previous = core.git_clone_or_update(package, requested_ref)
+    action = package.get("action", "smart")
+    if action.startswith("recipe") or package.get("recipe"):
+        _execute_recipe(core, package, path, assume_yes=assume_yes)
+    elif action == "smart":
+        _run_smart_install(core, package, path, assume_yes=assume_yes)
+    else:
+        print(core.color("green", f"Repository siap: {path}"))
+    core.record_install(package, path, previous, requested_ref)
+    print(core.color("green", f"Install selesai: {package['slug']} ({package['id']})"))
+
+
+def _update_one(core, query: str, assume_yes: bool = False) -> None:
+    package = core.resolve_package(query)
+    if not package:
+        raise SystemExit(f"Paket '{query}' tidak ditemukan.")
+    s = core.state()
+    item = s.get("installed", {}).get(package["slug"])
+    if not item:
+        return _install_command(core, query, assume_yes=assume_yes)
+    if package.get("type") != "repo":
+        return _install_command(core, query, assume_yes=assume_yes)
+    path = Path(item["path"])
+    _backup_and_clean(core, path, package["slug"])
+    old = core.git_head(path)
+    env = core.private_git_env(package)
+    core.run(["git", "fetch", "--all", "--tags", "--prune"], cwd=path, env=env)
+    ref = item.get("ref")
+    if ref:
+        chosen = core.choose_ref(package, ref) or ref
+        core.run(["git", "checkout", "--detach", chosen], cwd=path, env=env)
+    else:
+        branch = core.git_default_branch(path, env)
+        if branch:
+            core.run(["git", "checkout", branch], cwd=path, env=env, check=False)
+            core.run(["git", "pull", "--ff-only"], cwd=path, env=env)
+    new = core.git_head(path)
+    if new != old:
+        item["previous_commit"] = old
+        item["current_commit"] = new
+        item["updated_at"] = core.now_iso()
+        core.save_state(s)
+        core.notify("update", f"{package['slug']} diperbarui ke {new[:8] if new else 'latest'}")
+        action = package.get("action", "smart")
+        if action.startswith("recipe") or package.get("recipe"):
+            _execute_recipe(core, package, path, assume_yes=assume_yes)
+        elif action == "smart":
+            _run_smart_install(core, package, path, assume_yes=assume_yes)
+        print(core.color("green", f"{package['slug']} diperbarui."))
+    else:
+        print(f"{package['slug']} sudah terbaru.")
+
+
+def _repair_command(core, query: str, assume_yes: bool = False) -> None:
+    package = core.resolve_package(query)
+    if not package:
+        raise SystemExit("Paket tidak ditemukan.")
+    s = core.state()
+    item = s.get("installed", {}).get(package["slug"])
+    path = Path(item["path"]) if item and item.get("path") else core.PACKAGES / package["slug"]
+    if not path.exists():
+        print("Folder instalasi belum ada; menjalankan install.")
+        return _install_command(core, query, assume_yes=assume_yes)
+    if package.get("type") == "repo" and (path / ".git").exists():
+        _backup_and_clean(core, path, package["slug"])
+        core.run(["git", "fsck", "--no-progress"], cwd=path, check=False)
+    action = package.get("action", "smart")
+    if action.startswith("recipe") or package.get("recipe"):
+        _execute_recipe(core, package, path, assume_yes=assume_yes)
+    elif action == "smart":
+        _run_smart_install(core, package, path, assume_yes=assume_yes)
+    print(core.color("green", f"Repair selesai: {package['slug']}"))
+
+
+def _update_all(core, assume_yes: bool = False) -> None:
+    failures = 0
+    for item in core.installed_rows():
+        try:
+            _update_one(core, item["slug"], assume_yes=assume_yes)
+        except (SystemExit, Exception) as exc:
+            failures += 1
+            print(core.color("red", f"{item['slug']}: {exc}"))
+    if failures:
+        raise SystemExit(f"Update selesai dengan {failures} kegagalan.")
+
+
 def _patch(core) -> None:
     core.VERSION = VERSION
     core.compatible = lambda package: _compatible(core, package)
     core.smart_plan = lambda path: _smart_plan(core, path)
     core.run_smart_install = lambda package, path, assume_yes=False: _run_smart_install(core, package, path, assume_yes)
-    core.git_clone_or_update = lambda package, requested_ref=None: _clone_or_update(core, package, requested_ref)
-    core.repair_command = lambda query, assume_yes=False: _repair(core, query, assume_yes)
+    core.execute_recipe = lambda package, path, assume_yes=False: _execute_recipe(core, package, path, assume_yes)
+    core.install_command = lambda target, assume_yes=False: _install_command(core, target, assume_yes)
+    core.update_one = lambda query, assume_yes=False: _update_one(core, query, assume_yes)
+    core.update_all = lambda assume_yes=False: _update_all(core, assume_yes)
+    core.repair_command = lambda query, assume_yes=False: _repair_command(core, query, assume_yes)
 
-    original_update = core.update_one
 
-    def update_one(query: str, assume_yes: bool = False):
-        package = core.resolve_package(query)
-        if package:
-            item = core.state().get("installed", {}).get(package["slug"])
-            if item and item.get("path"):
-                path = Path(item["path"])
-                if path.exists() and (path / ".git").exists():
-                    _backup_and_clean(core, path, package["slug"])
-        before = None
-        if package:
-            item = core.state().get("installed", {}).get(package["slug"])
-            if item and item.get("path"):
-                before = core.git_head(Path(item["path"]))
-        result = original_update(query, assume_yes=assume_yes)
-        if package:
-            item = core.state().get("installed", {}).get(package["slug"])
-            path = Path(item["path"]) if item and item.get("path") else None
-            after = core.git_head(path) if path and path.exists() else None
-            if path and after != before and (package.get("action", "").startswith("recipe") or package.get("recipe")):
-                core.execute_recipe(package, path, assume_yes=assume_yes)
-        return result
-
-    core.update_one = update_one
+def core_module():
+    return _load_legacy()
 
 
 def run_cli(args: list[str]) -> int:
+    core = core_module()
+    old = sys.argv[:]
     try:
-        core = _load_legacy()
-        old_argv = sys.argv[:]
+        sys.argv = ["baska", *args]
         try:
-            sys.argv = ["baska", *args]
             core.main()
             return 0
-        finally:
-            sys.argv = old_argv
-    except SystemExit as exc:
-        code = exc.code
-        if code in (None, 0):
+        except SystemExit as exc:
+            code = exc.code
+            if isinstance(code, int):
+                return code
+            if code:
+                print(code, file=sys.stderr)
+                return 1
             return 0
-        if isinstance(code, int):
-            return code
-        print(str(code), file=sys.stderr)
-        return 1
-    except subprocess.CalledProcessError as exc:
-        cmd = " ".join(str(x) for x in (exc.cmd if isinstance(exc.cmd, (list, tuple)) else [exc.cmd]))
-        print(f"BASKA: command gagal (exit {exc.returncode}): {cmd}", file=sys.stderr)
-        return exc.returncode or 1
-    except KeyboardInterrupt:
-        print("\nDibatalkan.", file=sys.stderr)
-        return 130
-    except Exception as exc:
-        if os.getenv("BASKA_DEBUG") == "1":
-            raise
-        print(f"BASKA: {exc}", file=sys.stderr)
-        print("Gunakan BASKA_DEBUG=1 untuk traceback teknis.", file=sys.stderr)
-        return 1
-
-
-def main() -> None:
-    raise SystemExit(run_cli(sys.argv[1:]))
-
-
-if __name__ == "__main__":
-    main()
+    finally:
+        sys.argv = old
