@@ -19,6 +19,7 @@ STATE = ROOT / "registry" / "repo-sync.json"
 OVERRIDES = ROOT / "registry" / "overrides.json"
 ASSETS = ROOT / "registry" / "assets.json"
 MANIFEST = ROOT / "manifest.json"
+PYPROJECT = ROOT / "pyproject.toml"
 OWNER = "baska-pro"
 HUB_FULL_NAME = "baska-pro/baska-hub"
 
@@ -62,6 +63,11 @@ def slugify(name):
 def load_json(path, default):
     try:return json.loads(path.read_text(encoding="utf-8"))
     except (FileNotFoundError,json.JSONDecodeError):return default
+
+def project_version() -> str:
+    import tomllib
+    with PYPROJECT.open("rb") as fh:
+        return str(tomllib.load(fh)["project"]["version"])
 
 def infer_metadata(repo, files):
     names={x.get("name","") for x in files}; low={x.lower() for x in names}; topics=list(repo.get("topics") or []); language=repo.get("language"); tags=set(t.lower() for t in topics)
@@ -130,7 +136,8 @@ def main():
     generated=datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00","Z")
     CATALOG.write_text(json.dumps({"schema_version":3,"name":"BASKA Hub Catalog","owner":OWNER,"generated_at":generated,"private_policy":"Private repositories are never stored in this public catalog; they are discovered locally by `baska init`.","packages":packages},indent=2,ensure_ascii=False)+"\n",encoding="utf-8");write_tsv(packages)
     state["repositories"]=mapping;state["next_public_id"]=next_id;STATE.write_text(json.dumps(state,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
-    manifest={"schema_version":3,"name":"BASKA Hub","slug":"baska-hub","owner":OWNER,"default_branch":"main","cli":{"name":"baska","version":"1.0.0","path":"bin/baska"},"registry":{"catalog":"registry/catalog.json","index":"registry/packages.tsv","collections":"registry/collections.json","public_state":"registry/repo-sync.json","private":"local-only via baska init"},"id_policy":{"public":"5 digit chronology sequence; current newest anchor 50000, future repos increment","private":"Pxxxxx local-only","assets":"Axxxxx"},"features":["interactive-dashboard","smart-installer","platform-detection","install-update-remove-status-repair-rollback","version-management","dependency-resolver","release-first","sha256-provenance","categories-tags","profiles-collections","web-catalog"],"packages":packages}
-    MANIFEST.write_text(json.dumps(manifest,indent=2,ensure_ascii=False)+"\n",encoding="utf-8");print(f"SYNC OK: {len(repos)} public repos, next_public_id={next_id:05d}")
+    version=project_version()
+    manifest={"schema_version":3,"name":"BASKA Hub","slug":"baska-hub","owner":OWNER,"default_branch":"main","cli":{"name":"baska","version":version,"path":"bin/baska"},"registry":{"catalog":"registry/catalog.json","index":"registry/packages.tsv","collections":"registry/collections.json","public_state":"registry/repo-sync.json","private":"local-only via baska init"},"id_policy":{"public":"5 digit chronology sequence; current newest anchor 50000, future repos increment","private":"Pxxxxx local-only","assets":"Axxxxx"},"features":["interactive-dashboard","smart-installer","platform-detection","install-update-remove-status-repair-rollback","version-management","dependency-resolver","release-first","sha256-provenance","categories-tags","profiles-collections","web-catalog"],"packages":packages}
+    MANIFEST.write_text(json.dumps(manifest,indent=2,ensure_ascii=False)+"\n",encoding="utf-8");print(f"SYNC OK: {len(repos)} public repos, next_public_id={next_id:05d}, cli={version}")
 
 if __name__=="__main__":main()
