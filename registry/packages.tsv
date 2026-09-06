@@ -1,17 +1,15 @@
 id	slug	aliases	name	category	type	version	platforms	source	action	sha256	description
-00001	server-control	server-control-suite,servercontrol	Server Control Suite	tools	repo	4.0.0	linux	https://github.com/baska-pro/server-control-suite.git	recipe:recipes/server-control.sh	-	Remote management server Linux dari repo baska-pro/server-control-suite.
-00002	kuisingo	kuis,kuisingo-app	KuisinGo	apps	apk	01.0712.00	termux	https://raw.githubusercontent.com/baska-pro/baska-hub/main/apps/android/kuisingo/KuisinGo_01.0712.00.apk	open	-	Paket APK KuisinGo untuk Android; Termux membuka Android Package Installer.
-00003	arsip-script	arsipscript	Arsip-Script	repositories	repo	repo	all	https://github.com/baska-pro/Arsip-Script.git	git	-	Repository privat baska-pro/Arsip-Script; baska install akan clone/update repository.
-00004	oracle-cloud	oraclecloud	oracle-cloud	repositories	repo	repo	all	https://github.com/baska-pro/oracle-cloud.git	git	-	Repository privat baska-pro/oracle-cloud; baska install akan clone/update repository.
-00005	baska-pro	baskapro	baska-pro	repositories	repo	repo	all	https://github.com/baska-pro/baska-pro.git	git	-	Repository publik baska-pro/baska-pro; baska install akan clone/update repository.
-00006	windows-shortcut-control	windowsshortcutcontrol	windows-shortcut-control	repositories	repo	repo	all	https://github.com/baska-pro/windows-shortcut-control.git	git	-	Repository publik baska-pro/windows-shortcut-control; baska install akan clone/update repository.
-00007	bersihin	bersihin	bersihin	repositories	repo	repo	all	https://github.com/baska-pro/bersihin.git	git	-	Repository publik baska-pro/bersihin; baska install akan clone/update repository.
-00008	terminal-explorer	terminalexplorer	terminal-explorer	repositories	repo	repo	all	https://github.com/baska-pro/terminal-explorer.git	git	-	Repository publik baska-pro/terminal-explorer; baska install akan clone/update repository.
-00009	siskamling-digital	siskamlingdigital	siskamling-digital	repositories	repo	repo	all	https://github.com/baska-pro/siskamling-digital.git	git	-	Repository publik baska-pro/siskamling-digital; baska install akan clone/update repository.
-00010	remotedroid-control	remotedroidcontrol	remotedroid-control	repositories	repo	repo	all	https://github.com/baska-pro/remotedroid-control.git	git	-	Repository publik baska-pro/remotedroid-control; baska install akan clone/update repository.
-00011	windows-app-locker	windowsapplocker	windows-app-locker	repositories	repo	repo	all	https://github.com/baska-pro/windows-app-locker.git	git	-	Repository publik baska-pro/windows-app-locker; baska install akan clone/update repository.
-00012	remotepc-pro	remotepcpro	remotepc-pro	repositories	repo	repo	all	https://github.com/baska-pro/remotepc-pro.git	git	-	Repository publik baska-pro/remotepc-pro; baska install akan clone/update repository.
-00013	script-note	scriptnote	script-note	repositories	repo	repo	all	https://github.com/baska-pro/script-note.git	git	-	Repository publik baska-pro/script-note; baska install akan clone/update repository.
-00014	griya-kas	griyakas	griya-kas	repositories	repo	repo	all	https://github.com/baska-pro/griya-kas.git	git	-	Repository publik baska-pro/griya-kas; baska install akan clone/update repository.
-00015	dhs-app	dhsapp	dhs-app	repositories	repo	repo	all	https://github.com/baska-pro/dhs-app.git	git	-	Repository publik baska-pro/dhs-app; baska install akan clone/update repository.
-00016	web-print-app	webprintapp	web-print-app	repositories	repo	repo	all	https://github.com/baska-pro/web-print-app.git	git	-	Repository publik baska-pro/web-print-app; baska install akan clone/update repository.
+50000	web-print-app	webprintapp	web-print-app	repositories	repo	repo	all	https://github.com/baska-pro/web-print-app.git	smart	-	Public repository baska-pro/web-print-app.
+49999	dhs-app	dhsapp	dhs-app	repositories	repo	repo	all	https://github.com/baska-pro/dhs-app.git	smart	-	Public repository baska-pro/dhs-app.
+49998	griya-kas	griyakas	griya-kas	repositories	repo	repo	all	https://github.com/baska-pro/griya-kas.git	smart	-	Public repository baska-pro/griya-kas.
+49997	script-note	scriptnote	script-note	repositories	repo	repo	all	https://github.com/baska-pro/script-note.git	smart	-	Public repository baska-pro/script-note.
+49996	remotepc-pro	remotepcpro	remotepc-pro	repositories	repo	repo	windows	https://github.com/baska-pro/remotepc-pro.git	smart	-	Public repository baska-pro/remotepc-pro.
+49995	windows-app-locker	windowsapplocker	windows-app-locker	repositories	repo	repo	windows	https://github.com/baska-pro/windows-app-locker.git	smart	-	Public repository baska-pro/windows-app-locker.
+49994	remotedroid-control	remotedroidcontrol	remotedroid-control	repositories	repo	repo	all	https://github.com/baska-pro/remotedroid-control.git	smart	-	Public repository baska-pro/remotedroid-control.
+49993	siskamling-digital	siskamlingdigital	siskamling-digital	repositories	repo	repo	all	https://github.com/baska-pro/siskamling-digital.git	smart	-	Public repository baska-pro/siskamling-digital.
+49992	terminal-explorer	terminalexplorer	terminal-explorer	repositories	repo	repo	all	https://github.com/baska-pro/terminal-explorer.git	smart	-	Public repository baska-pro/terminal-explorer.
+49991	bersihin	bersihin	bersihin	repositories	repo	repo	all	https://github.com/baska-pro/bersihin.git	smart	-	Public repository baska-pro/bersihin.
+49990	server-control	server-control-suite,servercontrol	server-control-suite	tools	repo	repo	linux	https://github.com/baska-pro/server-control-suite.git	recipe:recipes/server-control.sh	-	Public repository baska-pro/server-control-suite.
+49989	windows-shortcut-control	windowsshortcutcontrol	windows-shortcut-control	repositories	repo	repo	windows	https://github.com/baska-pro/windows-shortcut-control.git	smart	-	Public repository baska-pro/windows-shortcut-control.
+49988	baska-pro	baskapro	baska-pro	repositories	repo	repo	all	https://github.com/baska-pro/baska-pro.git	smart	-	Public repository baska-pro/baska-pro.
+A50000	kuisingo	kuis,kuisingo-app	KuisinGo	apps	apk	01.0712.00	termux	https://raw.githubusercontent.com/baska-pro/baska-hub/main/apps/android/kuisingo/KuisinGo_01.0712.00.apk	open	-	KuisinGo APK for Android.

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "assets": [
+    {
+      "id": "A50000",
+      "slug": "kuisingo",
+      "aliases": ["kuis", "kuisingo-app"],
+      "name": "KuisinGo",
+      "category": "apps",
+      "type": "apk",
+      "version": "01.0712.00",
+      "platforms": ["termux"],
+      "architectures": ["all"],
+      "path": "apps/android/kuisingo/KuisinGo_01.0712.00.apk",
+      "source": "https://raw.githubusercontent.com/baska-pro/baska-hub/main/apps/android/kuisingo/KuisinGo_01.0712.00.apk",
+      "action": "open",
+      "trust": "trusted",
+      "status": "ready",
+      "visibility": "public",
+      "created_at": "2026-09-06T01:49:25Z",
+      "tags": ["android", "apk", "app"],
+      "dependencies": [],
+      "description": "KuisinGo APK for Android."
+    }
+  ]
+}
