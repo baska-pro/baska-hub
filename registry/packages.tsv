@@ -1,2 +1,3 @@
-id	name	category	type	version	platforms	path	action	sha256	description
-kuisingo	KuisinGo	apps	apk	01.0712.00	termux	apps/android/kuisingo/KuisinGo_01.0712.00.apk	open	-	Paket APK KuisinGo untuk Android; instalasi melalui Termux membuka Android Package Installer.
+id	slug	aliases	name	category	type	version	platforms	source	action	sha256	description
+00001	server-control	server-control-suite,servercontrol	Server Control Suite	tools	repo	4.0.0	linux	https://github.com/baska-pro/server-control-suite.git	recipe:recipes/server-control.sh	-	Remote management server Linux dari repo baska-pro/server-control-suite.
+00002	kuisingo	kuis,kuisingo-app	KuisinGo	apps	apk	01.0712.00	termux	https://raw.githubusercontent.com/baska-pro/baska-hub/main/apps/android/kuisingo/KuisinGo_01.0712.00.apk	open	-	Paket APK KuisinGo untuk Android; Termux membuka Android Package Installer.
