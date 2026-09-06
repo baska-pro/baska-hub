@@ -23,6 +23,7 @@ jobs:
             bin/baska-core \
             baska_help.py \
             baska_tui_v2.py \
+            baska_simple_ui.py \
             baska_core_v2.py \
             baska_self_update.py \
             install.sh \

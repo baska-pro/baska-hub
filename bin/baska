@@ -44,7 +44,22 @@ if args and args[0] in ("upgrade", "self-update"):
     from baska_self_update import cli
     raise SystemExit(cli(args[1:]))
 
-from baska_tui_v2 import main
+# Direct commands must never depend on curses. This keeps Windows native,
+# CI, redirected terminals, and minimal Python installations usable.
+if args:
+    from baska_core_v2 import run_cli
+    try:
+        raise SystemExit(run_cli(args))
+    except KeyboardInterrupt:
+        print("\nDibatalkan oleh pengguna.")
+        raise SystemExit(130)
+
+# Interactive mode prefers curses, then cleanly falls back to a portable
+# text dashboard when curses is unavailable (common on native Windows).
+try:
+    from baska_tui_v2 import main as interactive_main
+except (ImportError, ModuleNotFoundError):
+    from baska_simple_ui import main as interactive_main
 
 if __name__ == "__main__":
-    main()
+    interactive_main()
