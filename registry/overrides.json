@@ -5,6 +5,8 @@
     "1354456051": {"platforms":["windows"],"tags":["windows","printing","printer","webapp"]},
     "1352034396": {"platforms":["windows"],"tags":["windows","remote-desktop"]},
     "1351971401": {"platforms":["windows"],"tags":["windows","security","app-locker"]},
-    "1349185029": {"platforms":["windows"],"tags":["windows","utility","shortcuts"]}
+    "1349185029": {"platforms":["windows"],"tags":["windows","utility","shortcuts"]},
+    "1349346037": {"platforms":["all"],"tags":["cross-platform","linux","termux","windows","macos","wsl"]},
+    "1350156436": {"platforms":["linux","termux"],"tags":["linux","termux","debian","ubuntu","arch-linux"]}
   }
 }
