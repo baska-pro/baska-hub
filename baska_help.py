@@ -1,6 +1,11 @@
 from __future__ import annotations
 
-from baska_core_v2 import VERSION
+import importlib.metadata
+
+try:
+    VERSION = importlib.metadata.version("baska")
+except importlib.metadata.PackageNotFoundError:
+    from baska_core_v2 import VERSION
 
 COMMANDS = {
     "dashboard": ("baska dashboard", "Buka dashboard terminal interaktif."),
@@ -13,7 +18,7 @@ COMMANDS = {
     "update": ("baska update <id|slug>", "Update satu paket."),
     "update-all": ("baska update-all", "Update semua paket yang dikelola BASKA."),
     "upgrade": ("baska upgrade [--check|--force]", "Perbarui aplikasi BASKA sendiri ke versi terbaru."),
-    "self-update": ("baska self-update [--check|--force]", "Alias profesional untuk 'baska upgrade'."),
+    "self-update": ("baska self-update [--check|--force]", "Alias untuk 'baska upgrade'."),
     "remove": ("baska remove <id|slug>", "Hapus paket dari direktori terkelola BASKA."),
     "repair": ("baska repair <id|slug>", "Pulihkan managed clone dan jalankan ulang installer paket."),
     "rollback": ("baska rollback <id|slug>", "Kembali ke commit yang tersimpan sebelum update terakhir."),
