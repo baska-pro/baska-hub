@@ -1,0 +1,219 @@
+#!/usr/bin/env sh
+set -eu
+
+VERSION="0.1.0"
+REPO_OWNER="${BASKA_REPO_OWNER:-baska-pro}"
+REPO_NAME="${BASKA_REPO_NAME:-baska-hub}"
+BRANCH="${BASKA_REPO_BRANCH:-main}"
+RAW_BASE="https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}"
+BASKA_HOME="${BASKA_HOME:-$HOME/.baska}"
+CACHE_DIR="$BASKA_HOME/cache"
+PACKAGES_DIR="$BASKA_HOME/packages"
+REGISTRY="$CACHE_DIR/packages.tsv"
+
+mkdir -p "$CACHE_DIR" "$PACKAGES_DIR"
+
+say() { printf '%s\n' "$*"; }
+err() { printf 'ERROR: %s\n' "$*" >&2; }
+fail() { err "$*"; exit 1; }
+
+fetch() {
+  url="$1"; out="$2"
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL --retry 3 --connect-timeout 15 "$url" -o "$out"
+  elif command -v wget >/dev/null 2>&1; then
+    wget -qO "$out" "$url"
+  else
+    fail "curl atau wget diperlukan."
+  fi
+}
+
+platform() {
+  if [ -n "${TERMUX_VERSION:-}" ] || { [ -n "${PREFIX:-}" ] && printf '%s' "$PREFIX" | grep -q 'com.termux'; }; then
+    printf 'termux\n'
+  elif [ -f /etc/os-release ]; then
+    . /etc/os-release
+    printf '%s\n' "${ID:-linux}"
+  else
+    printf 'linux\n'
+  fi
+}
+
+arch() {
+  uname -m 2>/dev/null || printf 'unknown\n'
+}
+
+refresh() {
+  tmp="$REGISTRY.tmp"
+  fetch "$RAW_BASE/registry/packages.tsv" "$tmp"
+  mv "$tmp" "$REGISTRY"
+  say "Registry diperbarui."
+}
+
+ensure_registry() {
+  [ -s "$REGISTRY" ] || refresh >/dev/null
+}
+
+record() {
+  ensure_registry
+  id="$1"
+  awk -F '\t' -v id="$id" 'NR>1 && $1==id {print; exit}' "$REGISTRY"
+}
+
+field() {
+  line="$1"; num="$2"
+  printf '%s\n' "$line" | awk -F '\t' -v n="$num" '{print $n}'
+}
+
+compatible() {
+  targets="$1"; current="$(platform)"
+  [ "$targets" = "all" ] && return 0
+  printf '%s' "$targets" | tr ',' '\n' | grep -qx "$current" && return 0
+  [ "$current" != "termux" ] && printf '%s' "$targets" | tr ',' '\n' | grep -qx 'linux' && return 0
+  return 1
+}
+
+verify_sha256() {
+  file="$1"; expected="$2"
+  [ -z "$expected" ] || [ "$expected" = "-" ] && return 0
+  if command -v sha256sum >/dev/null 2>&1; then
+    actual="$(sha256sum "$file" | awk '{print $1}')"
+  elif command -v shasum >/dev/null 2>&1; then
+    actual="$(shasum -a 256 "$file" | awk '{print $1}')"
+  else
+    fail "Checksum tersedia di registry tetapi sha256sum/shasum tidak ditemukan."
+  fi
+  [ "$actual" = "$expected" ] || { rm -f "$file"; fail "SHA-256 tidak cocok. File dibatalkan."; }
+}
+
+list_packages() {
+  ensure_registry
+  printf '%-18s %-16s %-10s %-12s %s\n' "ID" "NAMA" "KATEGORI" "VERSI" "PLATFORM"
+  printf '%-18s %-16s %-10s %-12s %s\n' "------------------" "----------------" "----------" "------------" "--------"
+  awk -F '\t' 'NR>1 {printf "%-18s %-16s %-10s %-12s %s\n",$1,$2,$3,$5,$6}' "$REGISTRY"
+}
+
+search_packages() {
+  ensure_registry
+  q="${1:-}"
+  [ -n "$q" ] || fail "Gunakan: baska search <kata>"
+  awk -F '\t' -v q="$q" 'BEGIN{IGNORECASE=1} NR>1 && ($1~q || $2~q || $3~q || $10~q) {printf "%-18s %-16s %-10s %s\n",$1,$2,$3,$10}' "$REGISTRY"
+}
+
+info_package() {
+  id="${1:-}"; [ -n "$id" ] || fail "Gunakan: baska info <id>"
+  line="$(record "$id")"; [ -n "$line" ] || fail "Paket '$id' tidak ditemukan."
+  say "ID          : $(field "$line" 1)"
+  say "Nama        : $(field "$line" 2)"
+  say "Kategori    : $(field "$line" 3)"
+  say "Tipe        : $(field "$line" 4)"
+  say "Versi       : $(field "$line" 5)"
+  say "Platform    : $(field "$line" 6)"
+  say "Path        : $(field "$line" 7)"
+  say "Aksi        : $(field "$line" 8)"
+  say "SHA-256     : $(field "$line" 9)"
+  say "Deskripsi   : $(field "$line" 10)"
+}
+
+download_package() {
+  id="${1:-}"; requested="${2:-}"
+  [ -n "$id" ] || fail "Gunakan: baska get <id> [tujuan]"
+  line="$(record "$id")"; [ -n "$line" ] || fail "Paket '$id' tidak ditemukan."
+  path="$(field "$line" 7)"; sha="$(field "$line" 9)"; type="$(field "$line" 4)"
+  name="$(basename "$path")"
+
+  if [ -n "$requested" ]; then
+    if [ -d "$requested" ]; then out="$requested/$name"; else out="$requested"; fi
+  elif [ "$type" = "apk" ] && [ -d "$HOME/storage/downloads" ]; then
+    out="$HOME/storage/downloads/$name"
+  else
+    out="$PWD/$name"
+  fi
+
+  mkdir -p "$(dirname "$out")"
+  say "Mengunduh $id..."
+  fetch "$RAW_BASE/$path" "$out"
+  verify_sha256 "$out" "$sha"
+  say "$out"
+}
+
+install_package() {
+  id="${1:-}"; [ -n "$id" ] || fail "Gunakan: baska install <id>"
+  line="$(record "$id")"; [ -n "$line" ] || fail "Paket '$id' tidak ditemukan."
+  targets="$(field "$line" 6)"; action="$(field "$line" 8)"; path="$(field "$line" 7)"; sha="$(field "$line" 9)"
+  compatible "$targets" || fail "Paket '$id' tidak ditandai kompatibel dengan platform $(platform)."
+
+  case "$action" in
+    open)
+      file="$(download_package "$id" | tail -n 1)"
+      if command -v termux-open >/dev/null 2>&1; then termux-open "$file"; say "Installer Android dibuka.";
+      elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$file" >/dev/null 2>&1 || true; say "File telah diunduh: $file";
+      else say "File telah diunduh: $file"; fi
+      ;;
+    executable)
+      dir="$PACKAGES_DIR/$id"; mkdir -p "$dir"; file="$dir/$(basename "$path")"
+      fetch "$RAW_BASE/$path" "$file"; verify_sha256 "$file" "$sha"; chmod 755 "$file"
+      say "Terpasang: $file"
+      ;;
+    download|file)
+      download_package "$id" >/dev/null
+      ;;
+    *) fail "Aksi instalasi '$action' belum didukung CLI v$VERSION." ;;
+  esac
+}
+
+self_update() {
+  target="$0"
+  [ -w "$target" ] || fail "Tidak dapat menulis $target. Jalankan installer bootstrap kembali bila diperlukan."
+  tmp="$CACHE_DIR/baska.new"
+  fetch "$RAW_BASE/bin/baska" "$tmp"
+  chmod 755 "$tmp"
+  mv "$tmp" "$target"
+  say "BASKA CLI diperbarui."
+}
+
+doctor() {
+  say "BASKA CLI    : v$VERSION"
+  say "Platform     : $(platform)"
+  say "Arsitektur   : $(arch)"
+  say "Home         : $BASKA_HOME"
+  say "Repository   : $REPO_OWNER/$REPO_NAME@$BRANCH"
+  if command -v curl >/dev/null 2>&1; then say "Downloader   : curl";
+  elif command -v wget >/dev/null 2>&1; then say "Downloader   : wget";
+  else say "Downloader   : TIDAK ADA"; fi
+  if command -v termux-open >/dev/null 2>&1; then say "Android open : tersedia"; fi
+}
+
+usage() {
+  cat <<'EOF'
+BASKA Hub CLI
+
+Penggunaan:
+  baska list
+  baska search <kata>
+  baska info <id>
+  baska get <id> [tujuan]
+  baska install <id>
+  baska refresh
+  baska self-update
+  baska doctor
+  baska version
+  baska help
+EOF
+}
+
+cmd="${1:-help}"
+[ $# -gt 0 ] && shift || true
+case "$cmd" in
+  list) list_packages "$@" ;;
+  search) search_packages "$@" ;;
+  info) info_package "$@" ;;
+  get|download) download_package "$@" ;;
+  install) install_package "$@" ;;
+  refresh|update) refresh ;;
+  self-update) self_update ;;
+  doctor) doctor ;;
+  version|--version|-v) say "baska $VERSION" ;;
+  help|--help|-h) usage ;;
+  *) err "Command tidak dikenal: $cmd"; usage; exit 2 ;;
+esac
