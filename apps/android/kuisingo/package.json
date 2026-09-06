@@ -1,0 +1,10 @@
+{
+  "id": "kuisingo",
+  "name": "KuisinGo",
+  "version": "01.0712.00",
+  "type": "apk",
+  "platform": "android",
+  "entry": "KuisinGo_01.0712.00.apk",
+  "install_via": "android-package-installer",
+  "notes": "Gunakan baska install kuisingo dari Termux."
+}

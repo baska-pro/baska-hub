@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "name": "BASKA Hub",
+  "slug": "baska-hub",
+  "owner": "baska-pro",
+  "default_branch": "main",
+  "cli": {
+    "name": "baska",
+    "version": "0.1.0",
+    "path": "bin/baska"
+  },
+  "registry": "registry/packages.tsv",
+  "packages": [
+    {
+      "id": "kuisingo",
+      "name": "KuisinGo",
+      "category": "apps",
+      "type": "apk",
+      "version": "01.0712.00",
+      "platforms": ["termux"],
+      "architectures": ["all"],
+      "path": "apps/android/kuisingo/KuisinGo_01.0712.00.apk",
+      "install": {
+        "action": "open",
+        "requires_confirmation": true
+      },
+      "sha256": null,
+      "description": "Paket APK KuisinGo untuk Android."
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+name: Validate Hub
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate shell syntax
+        run: |
+          sh -n install.sh
+          sh -n bin/baska
+
+      - name: Validate JSON
+        run: |
+          python3 -m json.tool manifest.json >/dev/null
+          python3 -m json.tool apps/android/kuisingo/package.json >/dev/null
+
+      - name: Validate registry
+        run: |
+          python3 - <<'PY'
+          import csv, json, pathlib, sys
+
+          root = pathlib.Path('.')
+          with open('manifest.json', encoding='utf-8') as f:
+              manifest = json.load(f)
+          with open('registry/packages.tsv', encoding='utf-8', newline='') as f:
+              rows = list(csv.DictReader(f, delimiter='\t'))
+
+          expected = {'id','name','category','type','version','platforms','path','action','sha256','description'}
+          if not rows:
+              raise SystemExit('registry kosong')
+          if set(rows[0]) != expected:
+              raise SystemExit(f'kolom registry tidak sesuai: {set(rows[0])}')
+
+          ids = [r['id'] for r in rows]
+          if len(ids) != len(set(ids)):
+              raise SystemExit('ID registry duplikat')
+
+          manifest_ids = [p['id'] for p in manifest.get('packages', [])]
+          if set(ids) != set(manifest_ids):
+              raise SystemExit('ID registry dan manifest tidak sinkron')
+
+          for row in rows:
+              path = root / row['path']
+              if not path.exists():
+                  raise SystemExit(f"file tidak ditemukan: {row['path']}")
+
+          print(f'OK: {len(rows)} paket tervalidasi')
+          PY

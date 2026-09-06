@@ -1,0 +1,2 @@
+id	name	category	type	version	platforms	path	action	sha256	description
+kuisingo	KuisinGo	apps	apk	01.0712.00	termux	apps/android/kuisingo/KuisinGo_01.0712.00.apk	open	-	Paket APK KuisinGo untuk Android; instalasi melalui Termux membuka Android Package Installer.
