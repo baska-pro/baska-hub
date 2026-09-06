@@ -2,6 +2,7 @@
 from pathlib import Path
 import importlib.metadata
 import sys
+import tomllib
 
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
@@ -10,7 +11,11 @@ if str(ROOT) not in sys.path:
 try:
     package_version = importlib.metadata.version("baska")
 except importlib.metadata.PackageNotFoundError:
-    package_version = None
+    try:
+        with (ROOT / "pyproject.toml").open("rb") as fh:
+            package_version = str(tomllib.load(fh)["project"]["version"])
+    except Exception:
+        package_version = None
 
 if package_version:
     try:
