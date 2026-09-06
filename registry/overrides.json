@@ -2,11 +2,17 @@
   "schema_version": 1,
   "repositories": {
     "1349269933": {"slug":"server-control","aliases":["server-control-suite","servercontrol"],"category":"tools","action":"recipe:recipes/server-control.sh","recipe":"recipes/server-control.sh","trust":"trusted","platforms":["linux"],"tags":["server","monitoring","telegram","dashboard","automation"]},
-    "1354456051": {"platforms":["windows"],"tags":["windows","printing","printer","webapp"]},
-    "1352034396": {"platforms":["windows"],"tags":["windows","remote-desktop"]},
-    "1351971401": {"platforms":["windows"],"tags":["windows","security","app-locker"]},
-    "1349185029": {"platforms":["windows"],"tags":["windows","utility","shortcuts"]},
+    "1354456051": {"platforms":["windows"],"action":"smart","tags":["windows","printing","printer","webapp"]},
+    "1353373231": {"platforms":["all"],"action":"smart","tags":["node","react","pwa"]},
+    "1352148450": {"platforms":["all"],"action":"smart","tags":["node","react","pwa"]},
+    "1352068662": {"platforms":["all"],"action":"smart","tags":["node","react","developer-tools"]},
+    "1352034396": {"platforms":["windows"],"action":"smart","tags":["windows","remote-desktop"]},
+    "1351971401": {"platforms":["windows"],"action":"smart","tags":["windows","security","app-locker"]},
+    "1351157599": {"platforms":["termux"],"action":"smart","tags":["termux","android","python","telegram"]},
+    "1351117057": {"platforms":["linux"],"action":"smart","tags":["linux","bash","python","self-hosted"]},
+    "1350156436": {"platforms":["linux","termux"],"action":"recipe:recipes/shell-installer.sh","recipe":"recipes/shell-installer.sh","tags":["linux","termux","debian","ubuntu","arch-linux"]},
     "1349346037": {"platforms":["all"],"action":"recipe:recipes/shell-installer.sh","recipe":"recipes/shell-installer.sh","tags":["cross-platform","linux","termux","windows","macos","wsl"]},
-    "1350156436": {"platforms":["linux","termux"],"action":"recipe:recipes/shell-installer.sh","recipe":"recipes/shell-installer.sh","tags":["linux","termux","debian","ubuntu","arch-linux"]}
+    "1349185029": {"platforms":["windows"],"action":"smart","tags":["windows","utility","shortcuts"]},
+    "1349152032": {"platforms":["all"],"action":"git","tags":["profile","repository-only"]}
   }
 }
