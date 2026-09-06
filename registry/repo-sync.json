@@ -3,7 +3,7 @@
   "owner": "baska-pro",
   "hub_repository_id": 1358699949,
   "public_id_anchor": 50000,
-  "next_public_id": 50002,
+  "next_public_id": 50003,
   "repositories": {
     "1354456051": {
       "package_id": "50000",
@@ -74,6 +74,11 @@
       "package_id": "50001",
       "full_name": "baska-pro/shopping-list",
       "created_at": "2026-09-06T06:28:48Z"
+    },
+    "1359153877": {
+      "package_id": "50002",
+      "full_name": "baska-pro/github-control",
+      "created_at": "2026-09-06T13:11:23Z"
     }
   }
 }
