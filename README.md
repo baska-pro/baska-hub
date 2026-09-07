@@ -1,3 +1,9 @@
+<!-- repo-banner:start -->
+<p align="center">
+  <img src="./assets/banner.svg" alt="BASKA Hub Banner" width="100%">
+</p>
+<!-- repo-banner:end -->
+
 # BASKA Hub
 
 BASKA Hub adalah package dan GitHub repository manager interaktif untuk **Termux, Linux, dan Windows**. BASKA menyediakan dashboard terminal, katalog publik yang tersinkron otomatis, dukungan repository private melalui `baska init`, serta lifecycle install/update/remove/repair/rollback.
