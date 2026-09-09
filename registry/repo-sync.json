@@ -3,7 +3,7 @@
   "owner": "baska-pro",
   "hub_repository_id": 1358699949,
   "public_id_anchor": 50000,
-  "next_public_id": 50003,
+  "next_public_id": 50004,
   "repositories": {
     "1354456051": {
       "package_id": "50000",
@@ -79,6 +79,11 @@
       "package_id": "50002",
       "full_name": "baska-pro/github-control",
       "created_at": "2026-09-06T13:11:23Z"
+    },
+    "1363021974": {
+      "package_id": "50003",
+      "full_name": "baska-pro/lavi-finance-pages",
+      "created_at": "2026-09-09T17:39:26Z"
     }
   }
 }
