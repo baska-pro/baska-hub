@@ -2,7 +2,7 @@
   "schema_version": 3,
   "name": "BASKA Hub Catalog",
   "owner": "baska-pro",
-  "generated_at": "2026-09-09T18:34:31Z",
+  "generated_at": "2026-09-09T21:41:07Z",
   "private_policy": "Private repositories are never stored in this public catalog; they are discovered locally by `baska init`.",
   "packages": [
     {
@@ -31,10 +31,12 @@
       "status": "repository_only",
       "repository_id": 1363021974,
       "created_at": "2026-09-09T17:39:26Z",
-      "updated_at": "2026-09-09T17:39:32Z",
-      "pushed_at": "2026-09-09T17:39:27Z",
-      "language": null,
-      "tags": [],
+      "updated_at": "2026-09-09T20:16:59Z",
+      "pushed_at": "2026-09-09T20:14:08Z",
+      "language": "HTML",
+      "tags": [
+        "html"
+      ],
       "dependencies": [
         "git"
       ],
