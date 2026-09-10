@@ -1,5 +1,4 @@
 id	slug	aliases	name	category	type	version	platforms	source	action	sha256	description
-50003	lavi-finance-pages	lavifinancepages	lavi-finance-pages	repositories	repo	repo	all	https://github.com/baska-pro/lavi-finance-pages.git	git	-	Lavi Finance public deployment mirror — compiled production assets only; source remains private.
 50002	github-control	githubcontrol	github-control	repositories	repo	repo	all	https://github.com/baska-pro/github-control.git	smart	-	Telegram GitHub Control Center for repository, file, Git, Actions, releases, security, notifications, and multi-account management
 50001	shopping-list	shoppinglist	shopping-list	repositories	repo	v2.1.0	all	https://github.com/baska-pro/shopping-list.git	smart	-	Offline-first smart shopping list PWA with recipes, voice input, price history, Google Sheets sync, Supabase sync, and WhatsApp sharing.
 50000	web-print-app	webprintapp	web-print-app	repositories	repo	v4.0.3-advanced	windows	https://github.com/baska-pro/web-print-app.git	smart	-	Local Windows printer WebApp with file manager, persistent print queue, spooler control, Office/PDF printing, PWA, users, backup, and automation.
