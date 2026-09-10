@@ -1,4 +1,6 @@
 id	slug	aliases	name	category	type	version	platforms	source	action	sha256	description
+50004	kmd-check	kmdcheck	kmd-check	repositories	repo	repo	all	https://github.com/baska-pro/kmd-check.git	smart	-	Public repository baska-pro/kmd-check.
+50005	inframe-app	inframeapp	inframe-app	repositories	repo	v1.0.0	all	https://github.com/baska-pro/inframe-app.git	smart	-	Universal full-screen URL wrapper with first-class Google Apps Script support, configurable iframe cropping, query forwarding, and Vercel deployment.
 50002	github-control	githubcontrol	github-control	repositories	repo	repo	all	https://github.com/baska-pro/github-control.git	smart	-	Telegram GitHub Control Center for repository, file, Git, Actions, releases, security, notifications, and multi-account management
 50001	shopping-list	shoppinglist	shopping-list	repositories	repo	v2.1.0	all	https://github.com/baska-pro/shopping-list.git	smart	-	Offline-first smart shopping list PWA with recipes, voice input, price history, Google Sheets sync, Supabase sync, and WhatsApp sharing.
 50000	web-print-app	webprintapp	web-print-app	repositories	repo	v4.0.3-advanced	windows	https://github.com/baska-pro/web-print-app.git	smart	-	Local Windows printer WebApp with file manager, persistent print queue, spooler control, Office/PDF printing, PWA, users, backup, and automation.

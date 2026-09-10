@@ -2,9 +2,126 @@
   "schema_version": 3,
   "name": "BASKA Hub Catalog",
   "owner": "baska-pro",
-  "generated_at": "2026-09-10T04:41:34Z",
+  "generated_at": "2026-09-10T09:41:34Z",
   "private_policy": "Private repositories are never stored in this public catalog; they are discovered locally by `baska init`.",
   "packages": [
+    {
+      "id": "50004",
+      "slug": "kmd-check",
+      "aliases": [
+        "kmdcheck"
+      ],
+      "name": "kmd-check",
+      "category": "repositories",
+      "type": "repo",
+      "version": "repo",
+      "platforms": [
+        "all"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/kmd-check.git",
+      "action": "smart",
+      "recipe": null,
+      "sha256": null,
+      "description": "Public repository baska-pro/kmd-check.",
+      "visibility": "public",
+      "trust": "reviewed",
+      "status": "ready",
+      "repository_id": 1363674005,
+      "created_at": "2026-09-10T07:23:35Z",
+      "updated_at": "2026-09-10T09:30:09Z",
+      "pushed_at": "2026-09-10T09:40:06Z",
+      "language": "TypeScript",
+      "tags": [
+        "node",
+        "typescript"
+      ],
+      "dependencies": [
+        "git",
+        "node",
+        "npm"
+      ],
+      "installer_indicators": [
+        "node"
+      ],
+      "default_branch": "main",
+      "latest_release": null,
+      "preferred_delivery": "git",
+      "homepage": null,
+      "archived": false
+    },
+    {
+      "id": "50005",
+      "slug": "inframe-app",
+      "aliases": [
+        "inframeapp"
+      ],
+      "name": "inframe-app",
+      "category": "repositories",
+      "type": "repo",
+      "version": "v1.0.0",
+      "platforms": [
+        "all"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/inframe-app.git",
+      "action": "smart",
+      "recipe": null,
+      "sha256": null,
+      "description": "Universal full-screen URL wrapper with first-class Google Apps Script support, configurable iframe cropping, query forwarding, and Vercel deployment.",
+      "visibility": "public",
+      "trust": "reviewed",
+      "status": "ready",
+      "repository_id": 1363589142,
+      "created_at": "2026-09-10T06:00:19Z",
+      "updated_at": "2026-09-10T06:30:30Z",
+      "pushed_at": "2026-09-10T06:31:56Z",
+      "language": "TypeScript",
+      "tags": [
+        "apps-script",
+        "fullscreen",
+        "gas",
+        "google-apps-script",
+        "iframe",
+        "iframe-wrapper",
+        "node",
+        "react",
+        "typescript",
+        "url-wrapper",
+        "vercel",
+        "vite",
+        "web-app"
+      ],
+      "dependencies": [
+        "git",
+        "node",
+        "npm"
+      ],
+      "installer_indicators": [
+        "node"
+      ],
+      "default_branch": "main",
+      "latest_release": {
+        "tag_name": "v1.0.0",
+        "name": "InFrame App v1.0.0 — Universal Wrapper",
+        "published_at": "2026-09-10T06:15:59Z",
+        "html_url": "https://github.com/baska-pro/inframe-app/releases/tag/v1.0.0",
+        "assets": [
+          {
+            "name": "inframe-app-main.zip",
+            "size": 16589,
+            "download_url": "https://github.com/baska-pro/inframe-app/releases/download/v1.0.0/inframe-app-main.zip"
+          }
+        ]
+      },
+      "preferred_delivery": "release",
+      "homepage": null,
+      "archived": false
+    },
     {
       "id": "50002",
       "slug": "github-control",

@@ -3,7 +3,7 @@
   "owner": "baska-pro",
   "hub_repository_id": 1358699949,
   "public_id_anchor": 50000,
-  "next_public_id": 50004,
+  "next_public_id": 50006,
   "repositories": {
     "1354456051": {
       "package_id": "50000",
@@ -84,6 +84,16 @@
       "package_id": "50003",
       "full_name": "baska-pro/lavi-finance-pages",
       "created_at": "2026-09-09T17:39:26Z"
+    },
+    "1363674005": {
+      "package_id": "50004",
+      "full_name": "baska-pro/kmd-check",
+      "created_at": "2026-09-10T07:23:35Z"
+    },
+    "1363589142": {
+      "package_id": "50005",
+      "full_name": "baska-pro/inframe-app",
+      "created_at": "2026-09-10T06:00:19Z"
     }
   }
 }
