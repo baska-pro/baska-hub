@@ -35,7 +35,7 @@ jobs:
       - name: Commit verified mirror
         run: |
           set -euo pipefail
-          if git diff --quiet -- apps/lavi-finance/backend/telegram.gs apps/lavi-finance/backend/telegram.gs.sha256; then
+          if [ -z "$(git status --porcelain -- apps/lavi-finance/backend/telegram.gs apps/lavi-finance/backend/telegram.gs.sha256)" ]; then
             echo 'Mirror already current.'
             exit 0
           fi
