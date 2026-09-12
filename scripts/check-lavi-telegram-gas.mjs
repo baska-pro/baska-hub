@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 
-const file = process.argv[2] || 'apps/lavi-finance/backend/telegram.gs';
+const file = process.argv[2] || 'scripts/gas/telegram.gs';
 if (!fs.existsSync(file)) throw new Error(`Missing Lavi Telegram GAS mirror: ${file}`);
 const src = fs.readFileSync(file, 'utf8');
 

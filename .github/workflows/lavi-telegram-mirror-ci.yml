@@ -4,16 +4,14 @@ on:
   push:
     branches: [main]
     paths:
-      - 'apps/lavi-finance/backend/telegram.gs'
-      - 'apps/lavi-finance/backend/telegram.gs.sha256'
-      - 'apps/lavi-finance/README.md'
+      - 'scripts/gas/telegram.gs'
+      - 'scripts/gas/telegram.gs.sha256'
       - 'scripts/check-lavi-telegram-gas.mjs'
       - '.github/workflows/lavi-telegram-mirror-ci.yml'
   pull_request:
     paths:
-      - 'apps/lavi-finance/backend/telegram.gs'
-      - 'apps/lavi-finance/backend/telegram.gs.sha256'
-      - 'apps/lavi-finance/README.md'
+      - 'scripts/gas/telegram.gs'
+      - 'scripts/gas/telegram.gs.sha256'
       - 'scripts/check-lavi-telegram-gas.mjs'
       - '.github/workflows/lavi-telegram-mirror-ci.yml'
 
@@ -29,10 +27,10 @@ jobs:
         with:
           node-version: '22'
       - name: Verify mirror hash
-        run: sha256sum -c apps/lavi-finance/backend/telegram.gs.sha256
+        run: sha256sum -c scripts/gas/telegram.gs.sha256
       - name: Syntax check Apps Script source
         run: |
-          cp apps/lavi-finance/backend/telegram.gs /tmp/lavi-telegram.js
+          cp scripts/gas/telegram.gs /tmp/lavi-telegram.js
           node --check /tmp/lavi-telegram.js
       - name: Static smoke and secret scan
-        run: node scripts/check-lavi-telegram-gas.mjs apps/lavi-finance/backend/telegram.gs
+        run: node scripts/check-lavi-telegram-gas.mjs scripts/gas/telegram.gs

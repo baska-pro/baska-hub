@@ -13,6 +13,10 @@
     "1350156436": {"platforms":["linux","termux"],"action":"recipe:recipes/shell-installer.sh","recipe":"recipes/shell-installer.sh","tags":["linux","termux","debian","ubuntu","arch-linux"]},
     "1349346037": {"platforms":["all"],"action":"recipe:recipes/shell-installer.sh","recipe":"recipes/shell-installer.sh","tags":["cross-platform","linux","termux","windows","macos","wsl"]},
     "1349185029": {"platforms":["windows"],"action":"smart","tags":["windows","utility","shortcuts"]},
-    "1349152032": {"platforms":["all"],"action":"git","tags":["profile","repository-only"]}
+    "1349152032": {"platforms":["all"],"action":"git","tags":["profile","repository-only"]},
+    "1358854781": {"platforms":["all"],"action":"smart","tags":["node","react","pwa","shopping"]},
+    "1359153877": {"platforms":["all"],"action":"smart","tags":["python","telegram","github","automation"]},
+    "1363674005": {"platforms":["all"],"action":"smart","tags":["node","typescript","react","webapp"]},
+    "1363589142": {"platforms":["all"],"action":"smart","tags":["node","typescript","react","iframe","apps-script"]}
   }
 }
