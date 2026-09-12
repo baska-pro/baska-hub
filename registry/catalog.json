@@ -2,7 +2,7 @@
   "schema_version": 3,
   "name": "BASKA Hub Catalog",
   "owner": "baska-pro",
-  "generated_at": "2026-09-12T09:19:14Z",
+  "generated_at": "2026-09-12T10:13:45Z",
   "private_policy": "Private repositories are never stored in this public catalog; they are discovered locally by `baska init`.",
   "packages": [
     {
@@ -36,7 +36,9 @@
       "language": "TypeScript",
       "tags": [
         "node",
-        "typescript"
+        "react",
+        "typescript",
+        "webapp"
       ],
       "dependencies": [
         "git",
@@ -158,6 +160,7 @@
         "github",
         "pm2",
         "python",
+        "telegram",
         "telegram-bot"
       ],
       "dependencies": [
