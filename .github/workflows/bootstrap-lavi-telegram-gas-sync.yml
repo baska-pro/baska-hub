@@ -1,0 +1,46 @@
+name: Bootstrap Lavi Telegram GAS Mirror
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/bootstrap-lavi-telegram-gas-sync.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bootstrap-lavi-telegram-gas-mirror
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch exact production source snapshot
+        env:
+          SOURCE_URL: https://thermal-immediate-christina-cup.trycloudflare.com/telegram.gs
+          EXPECTED_SHA256: aaf638810ae7305edbe3076e3372c3bdb26054ec64fd26e4006a69773d642bb4
+        run: |
+          set -euo pipefail
+          mkdir -p apps/lavi-finance/backend
+          curl --fail --silent --show-error --location --retry 5 --retry-all-errors "$SOURCE_URL" -o /tmp/telegram.gs
+          actual="$(sha256sum /tmp/telegram.gs | awk '{print $1}')"
+          test "$actual" = "$EXPECTED_SHA256"
+          cp /tmp/telegram.gs apps/lavi-finance/backend/telegram.gs
+          printf '%s  apps/lavi-finance/backend/telegram.gs\n' "$EXPECTED_SHA256" > apps/lavi-finance/backend/telegram.gs.sha256
+          sha256sum -c apps/lavi-finance/backend/telegram.gs.sha256
+      - name: Commit verified mirror
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- apps/lavi-finance/backend/telegram.gs apps/lavi-finance/backend/telegram.gs.sha256; then
+            echo 'Mirror already current.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add apps/lavi-finance/backend/telegram.gs apps/lavi-finance/backend/telegram.gs.sha256
+          git commit -m 'chore: sync verified Lavi Telegram GAS production mirror'
+          git push
