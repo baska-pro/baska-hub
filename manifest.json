@@ -44,7 +44,7 @@
       "name": "lavi-growth",
       "category": "repositories",
       "type": "repo",
-      "version": "v1.0.0",
+      "version": "v1.0.1",
       "platforms": [
         "all"
       ],
@@ -61,8 +61,8 @@
       "status": "ready",
       "repository_id": 1368381667,
       "created_at": "2026-09-13T12:49:48Z",
-      "updated_at": "2026-09-13T13:39:56Z",
-      "pushed_at": "2026-09-13T14:22:40Z",
+      "updated_at": "2026-09-13T14:34:56Z",
+      "pushed_at": "2026-09-13T14:37:48Z",
       "language": "TypeScript",
       "tags": [
         "family-health",
@@ -87,10 +87,10 @@
       ],
       "default_branch": "main",
       "latest_release": {
-        "tag_name": "v1.0.0",
-        "name": "Lavi Growth v1.0.0",
-        "published_at": "2026-09-13T13:27:22Z",
-        "html_url": "https://github.com/baska-pro/lavi-growth/releases/tag/v1.0.0",
+        "tag_name": "v1.0.1",
+        "name": "Lavi Growth v1.0.1",
+        "published_at": "2026-09-13T14:35:26Z",
+        "html_url": "https://github.com/baska-pro/lavi-growth/releases/tag/v1.0.1",
         "assets": []
       },
       "preferred_delivery": "release",
