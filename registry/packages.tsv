@@ -1,4 +1,5 @@
 id	slug	aliases	name	category	type	version	platforms	source	action	sha256	description
+50006	lavi-growth	lavigrowth	lavi-growth	repositories	repo	v1.0.0	all	https://github.com/baska-pro/lavi-growth.git	smart	-	Family health and growth tracker with React, TypeScript, Google Apps Script, and Supabase sync.
 50004	kmd-check	kmdcheck	kmd-check	repositories	repo	repo	all	https://github.com/baska-pro/kmd-check.git	smart	-	Public repository baska-pro/kmd-check.
 50005	inframe-app	inframeapp	inframe-app	repositories	repo	v1.0.0	all	https://github.com/baska-pro/inframe-app.git	smart	-	Universal full-screen URL wrapper with first-class Google Apps Script support, configurable iframe cropping, query forwarding, and Vercel deployment.
 50002	github-control	githubcontrol	github-control	repositories	repo	repo	all	https://github.com/baska-pro/github-control.git	smart	-	Telegram GitHub Control Center for repository, file, Git, Actions, releases, security, notifications, and multi-account management
