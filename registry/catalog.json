@@ -2,7 +2,7 @@
   "schema_version": 3,
   "name": "BASKA Hub Catalog",
   "owner": "baska-pro",
-  "generated_at": "2026-09-18T04:46:01Z",
+  "generated_at": "2026-09-18T09:44:21Z",
   "private_policy": "Private repositories are never stored in this public catalog; they are discovered locally by `baska init`.",
   "packages": [
     {
