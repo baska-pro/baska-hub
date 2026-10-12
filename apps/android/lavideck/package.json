@@ -1,0 +1,15 @@
+{
+  "id": "lavideck",
+  "name": "LaviDeck",
+  "version": "2.2.0",
+  "type": "apk",
+  "platform": "android",
+  "package_name": "com.lavi.apphub",
+  "min_sdk": 26,
+  "target_sdk": 36,
+  "entry": "LaviDeck-v2.2.0.apk",
+  "bundle": "LaviDeck-v2.2.0.aab",
+  "install_via": "android-package-installer",
+  "sha256": "ff7185256fdde040d7517b9aa644b9e554b906b37da3d7ca6f56b29174d5c9da",
+  "notes": "APK mandiri dan offline. Instalasi melalui konfirmasi Android Package Installer."
+}

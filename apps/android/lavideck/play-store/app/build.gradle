@@ -1,0 +1,53 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.lavi.apphub'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'com.lavi.apphub'
+        minSdk 26
+        targetSdk 36
+        versionCode 4
+        versionName '2.2.0'
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs = ['../../app/src/main/java']
+            res.srcDirs = ['../../app/src/main/res']
+        }
+    }
+
+    // Build from source, do not ship SDK, Gradle cache, or private signing data.
+    signingConfigs {
+        if (System.getenv('LAVI_UPLOAD_KEYSTORE')) {
+            release {
+                storeFile file(System.getenv('LAVI_UPLOAD_KEYSTORE'))
+                storePassword System.getenv('LAVI_UPLOAD_PASSWORD') ?: ''
+                keyAlias System.getenv('LAVI_UPLOAD_ALIAS') ?: 'laviapps'
+                keyPassword System.getenv('LAVI_UPLOAD_PASSWORD') ?: ''
+            }
+        }
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled false
+            if (System.getenv('LAVI_UPLOAD_KEYSTORE')) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        buildConfig false
+    }
+}

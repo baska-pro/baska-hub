@@ -1,0 +1,35 @@
+name: Android CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Install Android SDK platform
+        run: sdkmanager "platforms;android-36" "build-tools;35.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+      - name: Build and lint
+        working-directory: play-store
+        run: gradle --no-daemon :app:assembleDebug :app:bundleRelease :app:lintDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lavi-shortcuts-ci-build
+          path: |
+            play-store/app/build/outputs/apk/debug/*.apk
+            play-store/app/build/outputs/bundle/release/*.aab
+            play-store/app/build/reports/lint-results-debug.html
