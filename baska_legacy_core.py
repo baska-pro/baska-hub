@@ -22,7 +22,7 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-VERSION = "1.0.0"
+VERSION = "1.3.2"
 OWNER = os.getenv("BASKA_OWNER", "baska-pro")
 HUB_REPO = os.getenv("BASKA_HUB_REPO", f"{OWNER}/baska-hub")
 HUB_BRANCH = os.getenv("BASKA_HUB_BRANCH", "main")

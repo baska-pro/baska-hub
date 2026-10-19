@@ -15,6 +15,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Verify tag matches package and manifest versions
+        run: |
+          python3 - <<'PY'
+          import json, os, tomllib
+          with open('pyproject.toml','rb') as fh:
+              version=tomllib.load(fh)['project']['version']
+          with open('manifest.json',encoding='utf-8') as fh:
+              cli_version=json.load(fh)['cli']['version']
+          tag=os.environ['GITHUB_REF_NAME']
+          assert tag==f'v{version}', f'Tag {tag} does not match project {version}'
+          assert cli_version==version, f'Manifest {cli_version} != {version}'
+          print('Release version verified:', version)
+          PY
       - name: Build distribution archive
         run: |
           mkdir -p dist
