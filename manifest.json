@@ -1189,7 +1189,7 @@
       "name": "server-control-suite",
       "category": "tools",
       "type": "repo",
-      "version": "windows-v5.0.0",
+      "version": "main",
       "platforms": [
         "linux"
       ],
@@ -1249,7 +1249,7 @@
           }
         ]
       },
-      "preferred_delivery": "release",
+      "preferred_delivery": "git",
       "homepage": null,
       "archived": false
     },
