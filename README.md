@@ -187,6 +187,17 @@ baska repair bersihin
 baska upgrade --check
 ```
 
+## BASKA SEND — SendToCom (Windows)
+
+BASKA Hub mencantumkan [BASKA SEND / SendToCom](https://github.com/baska-pro/sendtocom) sebagai proyek publik untuk **Windows**, dengan ID katalog **`50007`**. Tersedia [release v2.2.4](https://github.com/baska-pro/sendtocom/releases/tag/v2.2.4).
+
+```bash
+baska info 50007
+baska install sendtocom
+```
+
+**Catatan:** action paket saat ini adalah `git` (**repository-only / managed clone**), bukan penginstalan aplikasi Windows otomatis. Setelah mengunduh source, ikuti [panduan setup BASKA SEND](https://github.com/baska-pro/sendtocom/blob/main/docs/INSTALLATION.md) dan jalankan pada jaringan lokal tepercaya. Server memakai HTTP LAN, bukan endpoint publik.
+
 ## Platform dan installer
 
 BASKA tidak memaksa semua aplikasi berjalan di semua platform. Paket Windows-only tetap ditolak di Termux/Linux, dan paket Termux-only tidak dianggap otomatis kompatibel dengan Linux biasa.
