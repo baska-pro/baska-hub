@@ -51,6 +51,97 @@ def _is_managed(core, path: Path) -> bool:
         return False
 
 
+
+def _assert_managed_path(core, path: Path, slug: str) -> None:
+    """Only permit direct, non-symlink children of the BASKA packages directory."""
+    if not isinstance(slug, str) or not re.fullmatch(r"[a-z0-9][a-z0-9_-]*", slug):
+        raise SystemExit("Nama paket tidak aman untuk operasi file.")
+    root = core.PACKAGES.resolve()
+    candidate = Path(path).expanduser()
+    if candidate.is_symlink() or candidate.resolve() != root / slug:
+        raise SystemExit(
+            f"Operasi dibatalkan: path untuk {slug!r} berada di luar folder terkelola BASKA "
+            "atau merupakan symbolic link. Periksa state.json sebelum melanjutkan."
+        )
+
+
+def _guarded_remove(core, query: str, assume_yes: bool = False) -> None:
+    package = core.resolve_package(query)
+    slug = package["slug"] if package else query
+    state = core.state()
+    item = state.get("installed", {}).get(slug)
+    if not item:
+        raise SystemExit(f"{slug} tidak tercatat terpasang.")
+    if item.get("path"):
+        path = Path(item["path"])
+        _assert_managed_path(core, path, slug)
+        if path.exists():
+            if not assume_yes and not core.confirm(f"Hapus folder BASKA {path}?"):
+                print("Dibatalkan.")
+                return
+            shutil.rmtree(path)
+    del state["installed"][slug]
+    core.save_state(state)
+    print(core.color("green", f"{slug} dihapus dari BASKA."))
+
+
+def _guarded_rollback(core, legacy, query: str, assume_yes: bool = False) -> None:
+    package = core.resolve_package(query)
+    slug = package["slug"] if package else query
+    item = core.state().get("installed", {}).get(slug)
+    if item and item.get("path"):
+        _assert_managed_path(core, Path(item["path"]), slug)
+    return legacy(query, assume_yes=assume_yes)
+
+
+def _safe_refresh(core, silent: bool = False) -> None:
+    """Validate downloaded JSON before atomically replacing individual cache files."""
+    import json
+
+    old = core.load_json(core.CATALOG_FILE, {"packages": []})
+    old_ids = {p.get("id") for p in old.get("packages", [])}
+    catalog_tmp = core.CACHE / "catalog.json.download"
+    collections_tmp = core.CACHE / "collections.json.download"
+    try:
+        core.download(f"{core.RAW_BASE}/registry/catalog.json", catalog_tmp)
+        core.download(f"{core.RAW_BASE}/registry/collections.json", collections_tmp)
+        new = json.loads(catalog_tmp.read_text(encoding="utf-8"))
+        groups = json.loads(collections_tmp.read_text(encoding="utf-8"))
+        packages = new.get("packages")
+        if not isinstance(packages, list) or not isinstance(groups.get("collections"), dict):
+            raise ValueError("Format katalog/koleksi tidak valid.")
+        ids = [p.get("id") for p in packages if isinstance(p, dict)]
+        if len(ids) != len(packages) or any(not isinstance(i, str) or not i for i in ids):
+            raise ValueError("ID paket kosong atau tidak valid.")
+        if len(ids) != len(set(ids)) or any(p.get("visibility") == "private" for p in packages):
+            raise ValueError("Katalog duplikat atau memuat paket private.")
+        if old_ids and not packages:
+            raise ValueError("Katalog baru kosong; cache lama dipertahankan.")
+        catalog_tmp.replace(core.CATALOG_FILE)
+        collections_tmp.replace(core.COLLECTIONS_FILE)
+    except Exception as exc:
+        if not silent:
+            print(core.color("red", f"Refresh gagal; cache lama tetap aman: {exc}"))
+        if not core.CATALOG_FILE.exists():
+            raise
+        return
+    finally:
+        catalog_tmp.unlink(missing_ok=True)
+        collections_tmp.unlink(missing_ok=True)
+
+    new_ids = set(ids)
+    added = [p for p in packages if p["id"] in new_ids - old_ids]
+    if old_ids and added:
+        names = ", ".join(p.get("slug", p["id"]) for p in added[:5])
+        core.notify("catalog", f"{len(added)} paket/repo baru: {names}")
+    state = core.state()
+    state["catalog_ids"] = sorted(new_ids)
+    state["last_refresh"] = core.now_iso()
+    core.save_state(state)
+    if not silent:
+        print(core.color("green", "Katalog diperbarui."))
+
+
 def _dirty_entries(core, path: Path) -> list[str]:
     try:
         out = core.run(["git", "status", "--porcelain"], cwd=path, capture=True).stdout
@@ -60,6 +151,7 @@ def _dirty_entries(core, path: Path) -> list[str]:
 
 
 def _backup_and_clean(core, path: Path, slug: str) -> Path | None:
+    _assert_managed_path(core, path, slug)
     entries = _dirty_entries(core, path)
     if not entries:
         return None
@@ -344,6 +436,7 @@ def _install_command(core, target: str, assume_yes: bool = False) -> None:
         return
 
     target_path = core.PACKAGES / package["slug"]
+    _assert_managed_path(core, target_path, package["slug"])
     if target_path.exists() and (target_path / ".git").exists():
         _backup_and_clean(core, target_path, package["slug"])
 
@@ -370,6 +463,7 @@ def _update_one(core, query: str, assume_yes: bool = False) -> None:
     if package.get("type") != "repo":
         return _install_command(core, query, assume_yes=assume_yes)
     path = Path(item["path"])
+    _assert_managed_path(core, path, package["slug"])
     _backup_and_clean(core, path, package["slug"])
     old = core.git_head(path)
     env = core.private_git_env(package)
@@ -407,6 +501,7 @@ def _repair_command(core, query: str, assume_yes: bool = False) -> None:
     s = core.state()
     item = s.get("installed", {}).get(package["slug"])
     path = Path(item["path"]) if item and item.get("path") else core.PACKAGES / package["slug"]
+    _assert_managed_path(core, path, package["slug"])
     if not path.exists():
         print("Folder instalasi belum ada; menjalankan install.")
         return _install_command(core, query, assume_yes=assume_yes)
@@ -434,6 +529,10 @@ def _update_all(core, assume_yes: bool = False) -> None:
 
 
 def _patch(core) -> None:
+    legacy_rollback = core.rollback_command
+    core.remove_command = lambda query, assume_yes=False: _guarded_remove(core, query, assume_yes)
+    core.rollback_command = lambda query, assume_yes=False: _guarded_rollback(core, legacy_rollback, query, assume_yes)
+    core.refresh = lambda silent=False: _safe_refresh(core, silent)
     core.VERSION = VERSION
     core.compatible = lambda package: _compatible(core, package)
     core.smart_plan = lambda path: _smart_plan(core, path)

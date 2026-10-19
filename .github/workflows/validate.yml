@@ -38,6 +38,8 @@ jobs:
           assert {r['id'] for r in rows}==set(ids)
           print(f'OK: {len(packages)} public packages')
           PY
+      - name: Safety regression tests
+        run: python3 -m unittest discover -s tests -v
       - name: Public metadata checks
         run: |
           test -f LICENSE
