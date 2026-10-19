@@ -212,6 +212,18 @@
         "webapp"
       ]
     },
+    "1368381667": {
+      "platforms": [
+        "all"
+      ],
+      "action": "smart",
+      "tags": [
+        "node",
+        "react",
+        "typescript",
+        "family-health"
+      ]
+    },
     "1425340423": {
       "name": "BASKA SEND (SendToCom)",
       "category": "repositories",
