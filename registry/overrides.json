@@ -41,7 +41,9 @@
         "telegram",
         "dashboard",
         "automation"
-      ]
+      ],
+      "preferred_delivery": "git",
+      "version": "main"
     },
     "1349346037": {
       "platforms": [
