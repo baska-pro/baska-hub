@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'pyproject.toml'
+      - 'baska_cli.py'
       - 'baska_help.py'
       - 'baska_tui_v2.py'
       - 'baska_simple_ui.py'
@@ -76,6 +77,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Prepublish regression tests
+        run: |
+          python3 -m unittest discover -s tests -v
+          python3 scripts/audit_catalog.py
+          python3 -m py_compile baska_cli.py baska_core_v2.py bin/baska
       - name: Build package
         run: |
           python -m pip install --upgrade build

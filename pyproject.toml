@@ -29,9 +29,12 @@ Issues = "https://github.com/baska-pro/baska-hub/issues"
 Documentation = "https://github.com/baska-pro/baska-hub/tree/main/docs"
 Catalog = "https://baska-pro.github.io/baska-hub/"
 
+[project.scripts]
+baska = "baska_cli:main"
+baska-core = "baska_cli:core_main"
+
 [project.optional-dependencies]
 dev = ["build>=1.2", "twine>=6"]
 
 [tool.setuptools]
-py-modules = ["baska_help", "baska_tui_v2", "baska_core_v2", "baska_self_update", "baska_simple_ui"]
-script-files = ["bin/baska", "bin/baska-core"]
+py-modules = ["baska_cli", "baska_help", "baska_tui_v2", "baska_core_v2", "baska_self_update", "baska_simple_ui"]

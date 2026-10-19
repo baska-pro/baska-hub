@@ -21,6 +21,7 @@ jobs:
           tar -czf "dist/baska-hub-${GITHUB_REF_NAME}.tar.gz" \
             bin/baska \
             bin/baska-core \
+            baska_cli.py \
             baska_help.py \
             baska_tui_v2.py \
             baska_simple_ui.py \
