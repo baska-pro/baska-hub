@@ -26,6 +26,7 @@ jobs:
           python3 -m json.tool registry/catalog.json >/dev/null
           python3 -m json.tool registry/repo-sync.json >/dev/null
           python3 -m json.tool manifest.json >/dev/null
+          python3 scripts/audit_catalog.py
           python3 -m py_compile bin/baska scripts/sync_repositories.py
       - name: Commit catalog changes
         run: |

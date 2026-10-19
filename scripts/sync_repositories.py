@@ -119,7 +119,7 @@ def build_public_package(repo, package_id, token, overrides):
     policy = overrides.get(str(repo["id"])) or overrides.get(repo["full_name"])
     if policy is None:
         # Never auto-execute installers from newly discovered, unreviewed repositories.
-        policy = {"action": "git", "status": "repository_only", "trust": "reviewed"}
+        policy = {"action": "git", "status": "repository_only", "trust": "unreviewed"}
     p=merge_override(p, policy)
     if p.get("recipe"):p["action"]=f"recipe:{p['recipe']}";p["status"]="ready"
     return p
