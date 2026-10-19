@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import importlib.metadata
 import sys
-import tomllib
 from pathlib import Path
 
 
@@ -15,8 +14,17 @@ def _sync_version() -> None:
         version = importlib.metadata.version("baska")
     except importlib.metadata.PackageNotFoundError:
         try:
-            with (Path(__file__).resolve().parent / "pyproject.toml").open("rb") as file:
-                version = str(tomllib.load(file)["project"]["version"])
+            try:
+                import tomllib  # Python 3.11+
+                with (Path(__file__).resolve().parent / "pyproject.toml").open("rb") as file:
+                    version = str(tomllib.load(file)["project"]["version"])
+            except ImportError:
+                import re
+                source = (Path(__file__).resolve().parent / "pyproject.toml").read_text(encoding="utf-8")
+                found = re.search(r'^version\\s*=\\s*"([^"]+)"', source, re.MULTILINE)
+                if not found:
+                    return
+                version = found.group(1)
         except (OSError, KeyError, ValueError):
             return
     from baska_core_v2 import VERSION

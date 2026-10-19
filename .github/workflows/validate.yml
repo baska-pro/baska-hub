@@ -56,7 +56,7 @@ jobs:
           assert meta['name']=='baska'
           assert meta['license']=='MIT'
           assert meta['version']
-          assert {'baska_cli','baska_self_update','baska_simple_ui','baska_tui_v2','baska_core_v2'} <= modules
+          assert {'baska_cli','baska_legacy_core','baska_self_update','baska_simple_ui','baska_tui_v2','baska_core_v2'} <= modules
           scripts=data['project'].get('scripts',{})
           assert scripts.get('baska')=='baska_cli:main'
           assert scripts.get('baska-core')=='baska_cli:core_main'
@@ -84,3 +84,16 @@ jobs:
           python3 bin/baska upgrade --help >/dev/null
           python3 bin/baska install --help >/dev/null
           BASKA_HOME="$RUNNER_TEMP/baska-test" python3 bin/baska doctor
+
+  python310:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Legacy Python regression
+        run: |
+          python -m unittest discover -s tests -v
+          python bin/baska version
+          python bin/baska-core version

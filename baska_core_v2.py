@@ -14,6 +14,9 @@ VERSION = "1.2.2"
 
 
 def _legacy_path() -> Path:
+    bundled = Path(__file__).resolve().with_name("baska_legacy_core.py")
+    if bundled.is_file():
+        return bundled
     candidates = []
     found = shutil.which("baska-core")
     if found:

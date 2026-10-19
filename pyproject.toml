@@ -37,4 +37,4 @@ baska-core = "baska_cli:core_main"
 dev = ["build>=1.2", "twine>=6"]
 
 [tool.setuptools]
-py-modules = ["baska_cli", "baska_help", "baska_tui_v2", "baska_core_v2", "baska_self_update", "baska_simple_ui"]
+py-modules = ["baska_cli", "baska_legacy_core", "baska_help", "baska_tui_v2", "baska_core_v2", "baska_self_update", "baska_simple_ui"]
