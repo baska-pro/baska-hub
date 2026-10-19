@@ -2,9 +2,80 @@
   "schema_version": 3,
   "name": "BASKA Hub Catalog",
   "owner": "baska-pro",
-  "generated_at": "2026-10-19T06:13:08Z",
+  "generated_at": "2026-10-19T09:36:30Z",
   "private_policy": "Private repositories are never stored in this public catalog; they are discovered locally by `baska init`.",
   "packages": [
+    {
+      "id": "50007",
+      "slug": "sendtocom",
+      "aliases": [
+        "sendtocom"
+      ],
+      "name": "BASKA SEND (SendToCom)",
+      "category": "repositories",
+      "type": "repo",
+      "version": "v2.2.4",
+      "platforms": [
+        "windows"
+      ],
+      "architectures": [
+        "all"
+      ],
+      "source": "https://github.com/baska-pro/sendtocom.git",
+      "action": "git",
+      "recipe": null,
+      "sha256": null,
+      "description": "BASKA SEND — Lightweight Windows LAN messaging and file-sharing hub with private chat, device pairing, native notifications, and a responsive Python WebApp.",
+      "visibility": "public",
+      "trust": "reviewed",
+      "status": "repository_only",
+      "repository_id": 1425340423,
+      "created_at": "2026-10-19T08:44:14Z",
+      "updated_at": "2026-10-19T09:24:37Z",
+      "pushed_at": "2026-10-19T09:24:32Z",
+      "language": "Python",
+      "tags": [
+        "baska-send",
+        "desktop-notifications",
+        "device-pairing",
+        "file-sharing",
+        "lan",
+        "local-network",
+        "messaging",
+        "python",
+        "self-hosted",
+        "sqlite",
+        "webapp",
+        "windows"
+      ],
+      "dependencies": [
+        "git",
+        "python"
+      ],
+      "installer_indicators": [],
+      "default_branch": "main",
+      "latest_release": {
+        "tag_name": "v2.2.4",
+        "name": "BASKA SEND v2.2.4",
+        "published_at": "2026-10-19T09:06:23Z",
+        "html_url": "https://github.com/baska-pro/sendtocom/releases/tag/v2.2.4",
+        "assets": [
+          {
+            "name": "BASKA-SEND-v2.2.4-source.zip",
+            "size": 79170,
+            "download_url": "https://github.com/baska-pro/sendtocom/releases/download/v2.2.4/BASKA-SEND-v2.2.4-source.zip"
+          },
+          {
+            "name": "SHA256SUMS.txt",
+            "size": 95,
+            "download_url": "https://github.com/baska-pro/sendtocom/releases/download/v2.2.4/SHA256SUMS.txt"
+          }
+        ]
+      },
+      "preferred_delivery": "release",
+      "homepage": "https://github.com/baska-pro/sendtocom/releases/latest",
+      "archived": false
+    },
     {
       "id": "50006",
       "slug": "lavi-growth",
