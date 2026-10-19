@@ -116,7 +116,11 @@ def write_tsv(packages):
 def build_public_package(repo, package_id, token, overrides):
     inferred=infer_metadata(repo,root_contents(repo,token));release=latest_release(repo,token);slug=slugify(repo["name"])
     p={"id":package_id,"slug":slug,"aliases":[slug.replace("-","")],"name":repo["name"],"category":"repositories","type":"repo","version":release.get("tag_name") if release and release.get("tag_name") else "repo","platforms":inferred["platforms"],"architectures":inferred["architectures"],"source":repo["clone_url"],"action":inferred["action"],"recipe":None,"sha256":None,"description":repo.get("description") or f"Public repository {repo['full_name']}.","visibility":"public","trust":inferred["trust"],"status":inferred["status"],"repository_id":repo["id"],"created_at":repo.get("created_at"),"updated_at":repo.get("updated_at"),"pushed_at":repo.get("pushed_at"),"language":repo.get("language"),"tags":inferred["tags"],"dependencies":inferred["dependencies"],"installer_indicators":inferred["installer_indicators"],"default_branch":repo.get("default_branch") or "main","latest_release":release,"preferred_delivery":"release" if release else "git","homepage":repo.get("homepage") or None,"archived":bool(repo.get("archived"))}
-    p=merge_override(p,overrides.get(str(repo["id"])) or overrides.get(repo["full_name"]) or {})
+    policy = overrides.get(str(repo["id"])) or overrides.get(repo["full_name"])
+    if policy is None:
+        # Never auto-execute installers from newly discovered, unreviewed repositories.
+        policy = {"action": "git", "status": "repository_only", "trust": "reviewed"}
+    p=merge_override(p, policy)
     if p.get("recipe"):p["action"]=f"recipe:{p['recipe']}";p["status"]="ready"
     return p
 

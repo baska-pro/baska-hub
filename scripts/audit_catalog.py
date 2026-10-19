@@ -61,8 +61,8 @@ def main() -> None:
 
         rid = str(p.get("repository_id") or "")
         override = overrides.get(rid)
-        if rid and override is None:
-            fail(f"public repo {slug} has no explicit install policy in overrides.json")
+        if rid and override is None and (action != "git" or status != "repository_only"):
+            fail(f"public repo {slug} without install policy must remain repository_only/git")
 
         if action == "smart" and not p.get("installer_indicators"):
             # A deliberate smart override is allowed for a single-file entrypoint
