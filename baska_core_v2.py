@@ -154,50 +154,50 @@ def _dirty_entries(core, path: Path) -> list[str]:
 
 
 def _backup_and_clean(core, path: Path, slug: str) -> Path | None:
+    """Fail closed: do not reset or clean unless every local change is backed up."""
+    import tempfile
+
     _assert_managed_path(core, path, slug)
-    entries = _dirty_entries(core, path)
-    if not entries:
-        return None
-    if not _is_managed(core, path):
-        raise SystemExit(
-            f"{slug} memiliki perubahan lokal di luar direktori terkelola BASKA. "
-            "Commit/stash perubahan Anda dahulu."
-        )
-
-    stamp = time.strftime("%Y%m%d-%H%M%S")
-    backup = core.HOME / "backups" / slug / stamp
-    backup.mkdir(parents=True, exist_ok=True)
-
     try:
-        diff = core.run(["git", "diff", "--binary", "HEAD"], cwd=path, capture=True, check=False).stdout
+        status = core.run(["git", "status", "--porcelain"], cwd=path, capture=True).stdout
+    except Exception as exc:
+        raise SystemExit(f"Gagal memeriksa perubahan lokal; reset dibatalkan: {exc}") from exc
+    if not status.strip():
+        return None
+
+    backup_root = core.HOME / "backups" / slug
+    backup_root.mkdir(parents=True, exist_ok=True)
+    stamp = time.strftime("%Y%m%d-%H%M%S")
+    backup = Path(tempfile.mkdtemp(prefix=stamp + "-", dir=str(backup_root)))
+    try:
+        diff = core.run(["git", "diff", "--binary", "HEAD"], cwd=path, capture=True).stdout
         if diff:
             (backup / "changes.patch").write_text(diff, encoding="utf-8")
-    except Exception:
-        pass
-
-    try:
-        raw = core.run(
+        untracked = core.run(
             ["git", "ls-files", "--others", "--exclude-standard", "-z"],
-            cwd=path,
-            capture=True,
-            check=False,
+            cwd=path, capture=True,
         ).stdout
-        for rel in [x for x in raw.split("\0") if x]:
+        for rel in [name for name in untracked.split("\\0") if name]:
             src = path / rel
+            if ".." in Path(rel).parts or Path(rel).is_absolute():
+                raise ValueError(f"Path untracked tidak valid: {rel}")
             dst = backup / "untracked" / rel
-            if src.is_dir():
-                shutil.copytree(src, dst, dirs_exist_ok=True)
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            if src.is_symlink():
+                dst.symlink_to(os.readlink(src))
+            elif src.is_dir():
+                shutil.copytree(src, dst, symlinks=True, dirs_exist_ok=True)
             elif src.exists():
-                dst.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(src, dst)
-    except Exception:
-        pass
+            else:
+                raise FileNotFoundError(src)
+    except Exception as exc:
+        raise SystemExit(f"Backup tidak lengkap; perubahan lokal DIPERTAHANKAN. Detail: {exc}") from exc
 
     core.run(["git", "reset", "--hard", "HEAD"], cwd=path)
     core.run(["git", "clean", "-fd"], cwd=path)
-    print(core.color("yellow", f"Perubahan sisa instalasi dipulihkan. Backup: {backup}"))
+    print(core.color("yellow", f"Perubahan lokal diamankan sebelum reset. Backup: {backup}"))
     return backup
-
 
 def _shell_interpreter(path: Path) -> tuple[str, list[str]]:
     try:
