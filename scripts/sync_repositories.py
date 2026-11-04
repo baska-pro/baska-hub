@@ -68,10 +68,17 @@ def project_version() -> str:
     try:
         import tomllib  # Python 3.11+
     except ImportError:
-        # The package supports Python 3.10 without adding runtime dependencies.
+        # Keep the catalog generator usable on Python 3.10.
         source = PYPROJECT.read_text(encoding="utf-8")
-        project = source.split("[project]", 1)[-1].split("\n[", 1)[0]
-        match = re.search(r'(?m)^version\s*=\s*"([^"]+)"\s*
+        if "[project]" not in source:
+            raise ValueError("Missing [project] table in pyproject.toml")
+        section = source.split("[project]", 1)[1].split("\\n[", 1)[0]
+        for line in section.splitlines():
+            if line.strip().startswith("version ="):
+                return line.partition("=")[2].strip().strip('"')
+        raise ValueError("Missing project version in pyproject.toml")
+    with PYPROJECT.open("rb") as stream:
+        return str(tomllib.load(stream)["project"]["version"])
 
 def infer_metadata(repo, files):
     names={x.get("name","") for x in files}; low={x.lower() for x in names}; topics=list(repo.get("topics") or []); language=repo.get("language"); tags=set(t.lower() for t in topics)
