@@ -47,7 +47,7 @@ def main() -> None:
             continue
 
         source = str(p.get("source") or "")
-        if not re.fullmatch(r"https://github\\.com/[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+\\.git", source):
+        if not re.fullmatch(r"https://github\.com/[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+\.git", source):
             fail(f"unsafe repository clone URL for {slug}")
         action = str(p.get("action") or "git")
         recipe = p.get("recipe")
