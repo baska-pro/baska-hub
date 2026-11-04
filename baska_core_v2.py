@@ -454,7 +454,7 @@ def _validate_repo_source(package: dict) -> None:
     if (parsed.scheme != "https" or parsed.hostname != "github.com"
             or parsed.username or parsed.password or parsed.port
             or parsed.query or parsed.fragment
-            or not re.fullmatch(r"/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\\.git", parsed.path)):
+            or not re.fullmatch(r"/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\.git", parsed.path)):
         raise SystemExit("Sumber repository tidak aman; hanya GitHub HTTPS clone URL yang didukung.")
 
 
