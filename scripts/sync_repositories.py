@@ -72,8 +72,10 @@ def project_version() -> str:
         source = PYPROJECT.read_text(encoding="utf-8")
         if "[project]" not in source:
             raise ValueError("Missing [project] table in pyproject.toml")
-        section = source.split("[project]", 1)[1].split("\\n[", 1)[0]
+        section = source.split("[project]", 1)[1]
         for line in section.splitlines():
+            if line.strip().startswith("["):
+                break
             if line.strip().startswith("version ="):
                 return line.partition("=")[2].strip().strip('"')
         raise ValueError("Missing project version in pyproject.toml")
