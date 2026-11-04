@@ -1,122 +1,122 @@
 name: Publish BASKA to PyPI
 
+# Only a reviewed version tag can publish. Routine commits cannot publish.
 on:
   push:
-    branches: [main]
-    paths:
-      - 'pyproject.toml'
-      - 'baska_cli.py'
-      - 'baska_help.py'
-      - 'baska_tui_v2.py'
-      - 'baska_simple_ui.py'
-      - 'baska_core_v2.py'
-      - 'baska_self_update.py'
-      - 'bin/baska'
-      - 'bin/baska-core'
-      - '.github/workflows/publish-pypi.yml'
-  release:
-    types: [published]
-  workflow_dispatch:
+    tags:
+      - 'v*'
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
   group: publish-baska-pypi
   cancel-in-progress: false
 
 jobs:
-  version-check:
+  verify-tag:
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.meta.outputs.version }}
-      publish: ${{ steps.meta.outputs.publish }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - id: meta
-        name: Check package version on PyPI
+      - name: Validate release identity, manifest, ancestry and PyPI immutability
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
         run: |
+          git fetch origin main --depth=1
+          git merge-base --is-ancestor HEAD origin/main || {
+            echo "::error::Release tag must point to a commit on main"; exit 1;
+          }
           python - <<'PY'
-          import json
-          import os
-          import tomllib
-          import urllib.error
-          import urllib.request
-
-          with open('pyproject.toml', 'rb') as fh:
-              version = tomllib.load(fh)['project']['version']
-
-          exists = False
-          url = f'https://pypi.org/pypi/baska/{version}/json'
+          import json, os, re, tomllib, urllib.error, urllib.request
+          from pathlib import Path
+          tag = os.environ["RELEASE_TAG"]
+          with Path("pyproject.toml").open("rb") as stream:
+              project = tomllib.load(stream)["project"]
+          version = project["version"]
+          manifest = json.loads(Path("manifest.json").read_text(encoding="utf-8"))
+          if not re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+", tag):
+              raise SystemExit(f"Invalid release tag: {tag}")
+          if tag != "v" + version or version != manifest["cli"]["version"]:
+              raise SystemExit("Tag, pyproject.toml, and manifest.json versions differ")
           try:
-              with urllib.request.urlopen(url, timeout=20) as response:
-                  json.load(response)
-              exists = True
-          except urllib.error.HTTPError as exc:
-              if exc.code != 404:
+              with urllib.request.urlopen(f"https://pypi.org/pypi/baska/{version}/json", timeout=20):
+                  raise SystemExit(f"Refusing to republish immutable PyPI version {version}")
+          except urllib.error.HTTPError as error:
+              if error.code != 404:
                   raise
-
-          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
-              print(f'version={version}', file=out)
-              print(f"publish={'false' if exists else 'true'}", file=out)
-
-          print(f'BASKA version: {version}')
-          print('PyPI status:', 'already published' if exists else 'new version, publish required')
+          print(f"Release verified: {tag}")
           PY
 
+  test:
+    needs: verify-tag
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.10', '3.12', '3.13']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Regression tests
+        run: python -m unittest discover -s tests -v
+      - name: Source compilation
+        run: python -m compileall -q baska_cli.py baska_core_v2.py baska_legacy_core.py baska_help.py baska_self_update.py scripts
+      - name: Cross-platform command smoke tests
+        run: |
+          python bin/baska version
+          python bin/baska --help
+          python bin/baska-core version
+
   build:
-    needs: version-check
-    if: needs.version-check.outputs.publish == 'true'
+    needs: [verify-tag, test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Prepublish regression tests
+      - name: Validate catalog and package
         run: |
-          python3 -m unittest discover -s tests -v
-          python3 scripts/audit_catalog.py
-          python3 -m py_compile baska_cli.py baska_core_v2.py bin/baska
-      - name: Build package
-        run: |
-          python -m pip install --upgrade build
+          python scripts/audit_catalog.py
+          python -m unittest discover -s tests -v
+          python -m pip install --upgrade build twine
           python -m build
-      - name: Validate package metadata
-        run: |
-          python -m pip install --upgrade twine
           python -m twine check dist/*
-      - name: Smoke test wheel
+      - name: Installed wheel smoke
         run: |
-          python -m venv /tmp/baska-test
-          /tmp/baska-test/bin/pip install dist/*.whl
-          /tmp/baska-test/bin/baska --help >/dev/null
-          /tmp/baska-test/bin/baska help install >/dev/null
-          /tmp/baska-test/bin/baska help upgrade >/dev/null
-          /tmp/baska-test/bin/baska upgrade --help >/dev/null
-          /tmp/baska-test/bin/baska version
-          printf '0\n' | /tmp/baska-test/bin/python -c 'from baska_simple_ui import main; main()' >/dev/null
-          /tmp/baska-test/bin/baska-core version
+          python -m venv /tmp/baska-wheel
+          /tmp/baska-wheel/bin/python -m pip install dist/*.whl
+          /tmp/baska-wheel/bin/baska version
+          /tmp/baska-wheel/bin/baska --help
+          /tmp/baska-wheel/bin/baska-core version
+          /tmp/baska-wheel/bin/python -m pip check
       - uses: actions/upload-artifact@v4
         with:
-          name: python-package-dist-${{ needs.version-check.outputs.version }}
+          name: baska-pypi-${{ github.ref_name }}
           path: dist/
+          if-no-files-found: error
 
   publish:
-    needs: [version-check, build]
-    if: needs.version-check.outputs.publish == 'true'
+    needs: [verify-tag, test, build]
     runs-on: ubuntu-latest
     environment:
       name: pypi
       url: https://pypi.org/project/baska/
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: python-package-dist-${{ needs.version-check.outputs.version }}
+          name: baska-pypi-${{ github.ref_name }}
           path: dist/
-      - name: Publish with PyPI Trusted Publishing
+      - name: Publish via PyPI Trusted Publishing
         uses: pypa/gh-action-pypi-publish@release/v1
