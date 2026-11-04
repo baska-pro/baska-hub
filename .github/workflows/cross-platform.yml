@@ -1,0 +1,57 @@
+name: Cross-platform BASKA Smoke
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'baska_*.py'
+      - 'pyproject.toml'
+      - 'tests/**'
+      - '.github/workflows/cross-platform.yml'
+  pull_request:
+    paths:
+      - 'baska_*.py'
+      - 'pyproject.toml'
+      - 'tests/**'
+      - '.github/workflows/cross-platform.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  cli:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: '3.10'
+          - os: ubuntu-latest
+            python: '3.13'
+          - os: windows-latest
+            python: '3.12'
+          - os: windows-latest
+            python: '3.13'
+          - os: macos-latest
+            python: '3.12'
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Verify Python syntax and regression suite
+        run: |
+          python -m compileall -q baska_cli.py baska_legacy_core.py baska_core_v2.py baska_help.py baska_tui_v2.py baska_simple_ui.py baska_self_update.py tests
+          python -m unittest discover -s tests -v
+      - name: Verify installed console entrypoints
+        run: |
+          python -m pip install -e .
+          baska version
+          baska --help
+          baska-core version
+      - name: Termux platform detection smoke
+        if: runner.os == 'Linux'
+        env:
+          TERMUX_VERSION: 'ci-simulated'
+        run: python -c "import baska_legacy_core as core; assert core.detect_platform() == 'termux'"
