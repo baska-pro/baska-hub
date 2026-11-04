@@ -1075,7 +1075,8 @@
       },
       "preferred_delivery": "release",
       "homepage": null,
-      "archived": false
+      "archived": false,
+      "recipe_sha256": "b7567b88ba0cf9cb4b466b7cb2492dd715b1792c942e2c5c2cc8d189bf171f91"
     },
     {
       "id": "49991",
@@ -1147,7 +1148,8 @@
       },
       "preferred_delivery": "release",
       "homepage": null,
-      "archived": false
+      "archived": false,
+      "recipe_sha256": "b7567b88ba0cf9cb4b466b7cb2492dd715b1792c942e2c5c2cc8d189bf171f91"
     },
     {
       "id": "49990",
@@ -1221,7 +1223,8 @@
       },
       "preferred_delivery": "git",
       "homepage": null,
-      "archived": false
+      "archived": false,
+      "recipe_sha256": "232efabadcd326caa84d6840bae9e5823b192e19f1a625243961fc24fb860d39"
     },
     {
       "id": "49989",
