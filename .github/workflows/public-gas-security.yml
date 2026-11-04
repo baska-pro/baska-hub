@@ -1,0 +1,40 @@
+name: Public Apps Script Security Checks
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/gas/**'
+      - 'scripts/check-public-gas.mjs'
+      - 'scripts/check-lavi-telegram-gas.mjs'
+      - '.github/workflows/public-gas-security.yml'
+  pull_request:
+    paths:
+      - 'scripts/gas/**'
+      - 'scripts/check-public-gas.mjs'
+      - 'scripts/check-lavi-telegram-gas.mjs'
+      - '.github/workflows/public-gas-security.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-public-mirrors:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate source syntax
+        run: |
+          cp scripts/gas/telegram.gs /tmp/baska-telegram.js
+          cp scripts/gas/whatsapp-notofication.gs /tmp/baska-whatsapp.js
+          node --check /tmp/baska-telegram.js
+          node --check /tmp/baska-whatsapp.js
+      - name: Verify Telegram mirror fingerprint and contract
+        run: |
+          sha256sum -c scripts/gas/telegram.gs.sha256
+          node scripts/check-lavi-telegram-gas.mjs scripts/gas/telegram.gs
+      - name: Validate both public mirrors for embedded credentials
+        run: node scripts/check-public-gas.mjs
