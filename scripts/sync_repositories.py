@@ -138,7 +138,14 @@ def main():
     packages.sort(key=lambda p:(p.get("created_at") or "",int(re.sub(r"\D","",p["id"]) or 0)),reverse=True);packages.extend(asset_packages())
     from datetime import datetime,timezone
     generated=datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00","Z")
-    CATALOG.write_text(json.dumps({"schema_version":3,"name":"BASKA Hub Catalog","owner":OWNER,"generated_at":generated,"private_policy":"Private repositories are never stored in this public catalog; they are discovered locally by `baska init`.","packages":packages},indent=2,ensure_ascii=False)+"\n",encoding="utf-8");write_tsv(packages)
+    catalog={"schema_version":3,"name":"BASKA Hub Catalog","owner":OWNER,"generated_at":generated,"private_policy":"Private repositories are never stored in this public catalog; they are discovered locally by `baska init`.","packages":packages}
+    previous=load_json(CATALOG,{})
+    # A periodic sync must not create a Git commit just because the clock changed.
+    previous_content={k:v for k,v in previous.items() if k!="generated_at"}
+    new_content={k:v for k,v in catalog.items() if k!="generated_at"}
+    if previous_content==new_content and previous.get("generated_at"):
+        catalog["generated_at"]=previous["generated_at"]
+    CATALOG.write_text(json.dumps(catalog,indent=2,ensure_ascii=False)+"\n",encoding="utf-8");write_tsv(packages)
     state["repositories"]=mapping;state["next_public_id"]=next_id;STATE.write_text(json.dumps(state,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
     version=project_version()
     manifest={"schema_version":3,"name":"BASKA Hub","slug":"baska-hub","owner":OWNER,"default_branch":"main","cli":{"name":"baska","version":version,"path":"bin/baska"},"registry":{"catalog":"registry/catalog.json","index":"registry/packages.tsv","collections":"registry/collections.json","public_state":"registry/repo-sync.json","private":"local-only via baska init"},"id_policy":{"public":"5 digit chronology sequence; current newest anchor 50000, future repos increment","private":"Pxxxxx local-only","assets":"Axxxxx"},"features":["interactive-dashboard","smart-installer","platform-detection","install-update-remove-status-repair-rollback","version-management","dependency-resolver","release-first","sha256-provenance","categories-tags","profiles-collections","web-catalog"],"packages":packages}
