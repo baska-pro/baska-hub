@@ -46,6 +46,9 @@ def main() -> None:
             checked += 1
             continue
 
+        source = str(p.get("source") or "")
+        if not re.fullmatch(r"https://github\\.com/[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+\\.git", source):
+            fail(f"unsafe repository clone URL for {slug}")
         action = str(p.get("action") or "git")
         recipe = p.get("recipe")
         if action.startswith("recipe:"):
@@ -56,6 +59,8 @@ def main() -> None:
             fail(f"unknown action for {slug}: {action}")
 
         status = p.get("status")
+        if (action == "smart" or recipe) and (p.get("trust") not in {"reviewed", "trusted"} or status == "repository_only"):
+            fail(f"installer without explicit trust policy: {slug}")
         if status == "ready" and action == "git":
             fail(f"{slug} marked ready but only has git action")
 
