@@ -447,6 +447,17 @@ def _compatible(core, package: dict) -> bool:
     return "all" in supported or current in supported
 
 
+def _validate_repo_source(package: dict) -> None:
+    from urllib.parse import urlsplit
+
+    parsed = urlsplit(str(package.get("source") or ""))
+    if (parsed.scheme != "https" or parsed.hostname != "github.com"
+            or parsed.username or parsed.password or parsed.port
+            or parsed.query or parsed.fragment
+            or not re.fullmatch(r"/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\\.git", parsed.path)):
+        raise SystemExit("Sumber repository tidak aman; hanya GitHub HTTPS clone URL yang didukung.")
+
+
 def _install_command(core, target: str, assume_yes: bool = False) -> None:
     name, requested_ref = core.split_target(target)
     package = core.resolve_package(name)
@@ -466,6 +477,7 @@ def _install_command(core, target: str, assume_yes: bool = False) -> None:
         core.record_install(package, None, None, requested_ref)
         return
 
+    _validate_repo_source(package)
     target_path = core.PACKAGES / package["slug"]
     _assert_managed_path(core, target_path, package["slug"])
     if target_path.exists() and (target_path / ".git").exists():
