@@ -15,12 +15,13 @@
       "platforms": [
         "windows"
       ],
-      "action": "smart",
+      "action": "git",
       "tags": [
         "windows",
         "utility",
         "shortcuts"
-      ]
+      ],
+      "status": "repository_only"
     },
     "1349269933": {
       "slug": "server-control",
@@ -79,13 +80,14 @@
       "platforms": [
         "linux"
       ],
-      "action": "smart",
+      "action": "git",
       "tags": [
         "linux",
         "bash",
         "python",
         "self-hosted"
-      ]
+      ],
+      "status": "repository_only"
     },
     "1351157599": {
       "platforms": [
