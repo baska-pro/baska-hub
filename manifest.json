@@ -1044,7 +1044,7 @@
       "name": "terminal-explorer",
       "category": "repositories",
       "type": "repo",
-      "version": "v3.0.0",
+      "version": "v3.1.1",
       "platforms": [
         "linux",
         "termux"
@@ -1062,8 +1062,8 @@
       "status": "ready",
       "repository_id": 1350156436,
       "created_at": "2026-08-29T00:51:32Z",
-      "updated_at": "2026-09-07T01:48:13Z",
-      "pushed_at": "2026-09-07T01:48:09Z",
+      "updated_at": "2026-11-04T08:31:00Z",
+      "pushed_at": "2026-11-04T08:32:26Z",
       "language": "Shell",
       "tags": [
         "arch-linux",
@@ -1074,6 +1074,7 @@
         "file-manager",
         "fzf",
         "linux",
+        "python",
         "shell",
         "shell-script",
         "terminal",
@@ -1084,24 +1085,20 @@
         "ubuntu"
       ],
       "dependencies": [
-        "git"
+        "git",
+        "python"
       ],
       "installer_indicators": [
-        "install.sh"
+        "install.sh",
+        "python"
       ],
       "default_branch": "main",
       "latest_release": {
-        "tag_name": "v3.0.0",
-        "name": "Terminal Explorer v3.0.0",
-        "published_at": "2026-08-29T02:37:21Z",
-        "html_url": "https://github.com/baska-pro/terminal-explorer/releases/tag/v3.0.0",
-        "assets": [
-          {
-            "name": "install.sh",
-            "size": 5681,
-            "download_url": "https://github.com/baska-pro/terminal-explorer/releases/download/v3.0.0/install.sh"
-          }
-        ]
+        "tag_name": "v3.1.1",
+        "name": "Terminal Explorer v3.1.1",
+        "published_at": "2026-11-04T08:35:56Z",
+        "html_url": "https://github.com/baska-pro/terminal-explorer/releases/tag/v3.1.1",
+        "assets": []
       },
       "preferred_delivery": "release",
       "homepage": null,
