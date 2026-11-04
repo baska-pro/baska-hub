@@ -44,9 +44,12 @@ jobs:
         run: |
           python -m compileall -q baska_cli.py baska_legacy_core.py baska_core_v2.py baska_help.py baska_tui_v2.py baska_simple_ui.py baska_self_update.py tests
           python -m unittest discover -s tests -v
-      - name: Verify installed console entrypoints
+      - name: Build and install wheel distribution
         run: |
-          python -m pip install -e .
+          python -m pip install --disable-pip-version-check build
+          python -m build --wheel
+          python -m pip install --no-index --find-links dist --force-reinstall --no-deps baska
+          python -m pip check
           baska version
           baska --help
           baska-core version

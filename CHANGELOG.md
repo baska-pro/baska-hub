@@ -2,6 +2,27 @@
 
 All notable BASKA Hub changes are documented here. Git tags and [GitHub Releases](https://github.com/baska-pro/baska-hub/releases) are the authoritative version records.
 
+## [1.3.3] — 2026-11-04
+
+### Keamanan dan data pengguna
+- Simpan file token dan katalog private secara atomik dengan izin terbatas; tolak symbolic link ke lokasi token.
+- Repositori private yang baru ditemukan bersifat **source-only/unreviewed** sampai pemasangan disetujui.
+- Installer `smart` tidak dapat dieksekusi secara otomatis dari sumber belum ditinjau, termasuk ketika opsi `--yes` digunakan.
+- Batasi sumber clone ke GitHub HTTPS; validasi path recipe, verifikasi checksum SHA-256, dan bersihkan file recipe sementara.
+- Gagalkan proses Git reset/clean apabila backup perubahan lokal belum berhasil lengkap.
+
+### Katalog, distribusi, dan pengujian
+- Sinkronisasi katalog menjadi idempotent, tanpa commit baru hanya karena timestamp berubah.
+- Sinkronkan dua entri yang belum dapat dipasang menjadi `repository_only`, tanpa menghapus kode sumbernya.
+- Perluas pengujian Python 3.10, Linux, Windows dan macOS; cek wheel terinstal secara terpisah.
+- Tambahkan pemeriksaan sintaks dan secret untuk mirror Google Apps Script Telegram dan WhatsApp.
+- Batasi publikasi PyPI pada tag versi yang cocok dan pengujian sukses; rilis menggunakan Trusted Publishing.
+- Perjelas persyaratan Python dan Git saat instalasi, dokumentasi rilis, dan banner PyPI.
+
+### Upgrade
+Gunakan `python -m pip install --upgrade baska` setelah rilis PyPI terkonfirmasi.
+Perubahan CLI tidak otomatis memperbarui semua proyek yang dikelola BASKA.
+
 ## [1.3.2] — 2026-10-19
 
 ### Security and reliability
