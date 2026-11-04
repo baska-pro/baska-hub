@@ -1,22 +1,40 @@
 name: Sync BASKA Catalog
+
 on:
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Stage and verify a harmless catalog change without updating main"
+        required: false
+        default: false
+        type: boolean
   schedule:
     - cron: '17 * * * *'
   push:
     branches: [main]
-    paths: ['registry/overrides.json','registry/assets.json','scripts/sync_repositories.py']
+    paths:
+      - 'registry/overrides.json'
+      - 'registry/assets.json'
+      - 'scripts/sync_repositories.py'
+      - '.github/workflows/sync-repositories.yml'
+
 permissions:
   contents: write
+  actions: write
+  checks: read
+
 concurrency:
   group: baska-public-catalog-sync
   cancel-in-progress: false
+
 jobs:
   sync:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Build public catalog
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -28,11 +46,9 @@ jobs:
           python3 -m json.tool manifest.json >/dev/null
           python3 scripts/audit_catalog.py
           python3 -m py_compile bin/baska scripts/sync_repositories.py
-      - name: Commit catalog changes
-        run: |
-          if git diff --quiet -- registry/packages.tsv registry/catalog.json registry/repo-sync.json manifest.json; then echo "Catalog already current."; exit 0; fi
-          git config user.name "baska-hub-bot"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add registry/packages.tsv registry/catalog.json registry/repo-sync.json manifest.json
-          git commit -m "chore: auto-sync public BASKA catalog"
-          git push
+          bash -n scripts/publish_catalog_safely.sh
+      - name: Stage, test and publish catalog delta
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASKA_SYNC_DRY_RUN: ${{ inputs.dry_run || false }}
+        run: bash scripts/publish_catalog_safely.sh
