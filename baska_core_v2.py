@@ -362,10 +362,14 @@ def _run_smart_install(core, package: dict, path: Path, assume_yes: bool = False
     for i, item in enumerate(plan, 1):
         print(f"  {i}. {item['description']}")
 
-    trust = package.get("trust", "reviewed")
-    allowed = assume_yes or trust == "trusted"
+    trust = package.get("trust", "unreviewed")
+    if trust not in {"reviewed", "trusted"} or package.get("status") == "repository_only":
+        print(core.color("yellow", "Installer tidak dieksekusi: sumber belum disetujui; clone tetap tersedia."))
+        return
+    # --yes is only sufficient for a trusted, explicitly allowlisted package.
+    allowed = trust == "trusted" and assume_yes
     if not allowed:
-        allowed = core.confirm("Lanjutkan instalasi?")
+        allowed = core.confirm("Jalankan installer dari repository ini?")
     if not allowed:
         print("Installer dilewati. Repository tetap tersedia sebagai managed clone.")
         return
@@ -389,6 +393,9 @@ def _run_smart_install(core, package: dict, path: Path, assume_yes: bool = False
 
 
 def _execute_recipe(core, package: dict, path: Path, assume_yes: bool = False) -> None:
+    import hashlib
+    import tempfile
+
     recipe = package.get("recipe")
     if not recipe:
         action = package.get("action", "")
@@ -396,22 +403,43 @@ def _execute_recipe(core, package: dict, path: Path, assume_yes: bool = False) -
             recipe = action.split(":", 1)[1]
     if not recipe:
         return
-    tmp = core.CACHE / f"recipe-{package['id']}.sh"
-    core.download(f"{core.RAW_BASE}/{recipe}", tmp)
-    tmp.chmod(0o700)
-    env = os.environ.copy()
-    env.update({
-        "BASKA_PACKAGE_ID": str(package["id"]),
-        "BASKA_PACKAGE_SLUG": package["slug"],
-        "BASKA_PACKAGE_SOURCE": package["source"],
-        "BASKA_PACKAGE_HOME": str(path),
-        "BASKA_ASSUME_YES": "1" if assume_yes else "0",
-    })
-    try:
-        core.run(["sh", str(tmp)], env=env)
-    except subprocess.CalledProcessError as exc:
-        raise SystemExit(f"Recipe gagal (exit {exc.returncode}): {recipe}") from None
 
+    if not re.fullmatch(r"recipes/(?:[a-zA-Z0-9_-]+/)*[a-zA-Z0-9_-]+\\.sh", recipe):
+        raise SystemExit("Recipe tidak valid: hanya path aman di recipes/*.sh yang diterima.")
+    trust = package.get("trust", "unreviewed")
+    if trust not in {"reviewed", "trusted"} or package.get("status") == "repository_only":
+        raise SystemExit("Recipe diblokir: paket belum disetujui untuk eksekusi.")
+    print(f"Recipe: {recipe} | Source: {core.RAW_BASE}/{recipe}")
+    if not (trust == "trusted" and assume_yes) and not core.confirm("Unduh dan jalankan recipe ini?"):
+        print("Recipe dilewati; repository tetap tersedia.")
+        return
+
+    core.CACHE.mkdir(parents=True, exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(prefix="baska-recipe-", suffix=".sh", dir=str(core.CACHE))
+    os.close(fd)
+    tmp = Path(tmp_name)
+    try:
+        core.download(f"{core.RAW_BASE}/{recipe}", tmp)
+        expected = package.get("recipe_sha256")
+        if expected:
+            actual = hashlib.sha256(tmp.read_bytes()).hexdigest()
+            if actual.lower() != str(expected).lower():
+                raise SystemExit("Checksum recipe tidak cocok; eksekusi dibatalkan.")
+        tmp.chmod(0o700)
+        env = os.environ.copy()
+        env.update({
+            "BASKA_PACKAGE_ID": str(package["id"]),
+            "BASKA_PACKAGE_SLUG": package["slug"],
+            "BASKA_PACKAGE_SOURCE": package["source"],
+            "BASKA_PACKAGE_HOME": str(path),
+            "BASKA_ASSUME_YES": "1" if assume_yes else "0",
+        })
+        try:
+            core.run(["sh", str(tmp)], env=env)
+        except subprocess.CalledProcessError as exc:
+            raise SystemExit(f"Recipe gagal (exit {exc.returncode}): {recipe}") from None
+    finally:
+        tmp.unlink(missing_ok=True)
 
 def _compatible(core, package: dict) -> bool:
     supported = set(package.get("platforms") or ["all"])
