@@ -177,7 +177,7 @@ def _backup_and_clean(core, path: Path, slug: str) -> Path | None:
             ["git", "ls-files", "--others", "--exclude-standard", "-z"],
             cwd=path, capture=True,
         ).stdout
-        for rel in [name for name in untracked.split("\\0") if name]:
+        for rel in [name for name in untracked.split("\0") if name]:
             src = path / rel
             if ".." in Path(rel).parts or Path(rel).is_absolute():
                 raise ValueError(f"Path untracked tidak valid: {rel}")
@@ -404,7 +404,7 @@ def _execute_recipe(core, package: dict, path: Path, assume_yes: bool = False) -
     if not recipe:
         return
 
-    if not re.fullmatch(r"recipes/(?:[a-zA-Z0-9_-]+/)*[a-zA-Z0-9_-]+\\.sh", recipe):
+    if not re.fullmatch(r"recipes/(?:[a-zA-Z0-9_-]+/)*[a-zA-Z0-9_-]+\.sh", recipe):
         raise SystemExit("Recipe tidak valid: hanya path aman di recipes/*.sh yang diterima.")
     trust = package.get("trust", "unreviewed")
     if trust not in {"reviewed", "trusted"} or package.get("status") == "repository_only":
