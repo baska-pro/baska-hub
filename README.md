@@ -26,9 +26,9 @@ BASKA Hub adalah package dan GitHub repository manager interaktif untuk **Termux
 - Profiles, favorites, notifications, web catalog
 - Distribusi melalui PyPI dan GitHub
 
-## Versi terbaru — v1.3.2
+## Versi terbaru — v1.3.3
 
-Versi **1.3.2** memperbaiki launcher `baska`/`baska-core` setelah instalasi wheel di Windows, mengamankan operasi file agar hanya menyentuh folder BASKA terkelola, melindungi cache katalog dari unduhan gagal, serta menetapkan paket publik baru sebagai *repository-only* sampai ditinjau. Lihat [CHANGELOG.md](CHANGELOG.md) dan [GitHub Releases](https://github.com/baska-pro/baska-hub/releases).
+Versi **1.3.3** memperketat kepercayaan installer dan penyimpanan token lokal, mengamankan pemulihan dari reset yang tidak berhasil dibackup, menambahkan checksum SHA-256 untuk recipe resmi, serta memisahkan rilis PyPI dari sinkronisasi katalog. Pengujian lintas Linux, Windows, dan macOS kini mencakup paket wheel yang dibangun dari sumber. Lihat [CHANGELOG.md](CHANGELOG.md) dan [GitHub Releases](https://github.com/baska-pro/baska-hub/releases).
 
 ## Persyaratan
 
