@@ -1,6 +1,6 @@
 <!-- repo-banner:start -->
 <p align="center">
-  <img src="./assets/banner.svg" alt="BASKA Hub Banner" width="100%">
+  <img src="https://raw.githubusercontent.com/baska-pro/baska-hub/main/assets/banner.svg" alt="BASKA Hub Banner" width="100%">
 </p>
 <!-- repo-banner:end -->
 

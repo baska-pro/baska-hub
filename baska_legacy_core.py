@@ -64,10 +64,33 @@ def load_json(path: Path, default):
     except (FileNotFoundError, json.JSONDecodeError):
         return default
 
+def _write_private_text(path: Path, contents: str) -> None:
+    """Create credential-bearing files atomically, without a world-readable window."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.is_symlink():
+        raise RuntimeError(f"Refusing to replace a symlink containing private data: {path}")
+    if os.name != "nt" and path.parent == TOKEN_FILE.parent:
+        path.parent.chmod(0o700)
+    fd, tmp_name = tempfile.mkstemp(prefix=".baska-", dir=str(path.parent))
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            handle.write(contents)
+        if os.name != "nt":
+            os.chmod(tmp_name, 0o600)
+        os.replace(tmp_name, path)
+    finally:
+        if os.path.exists(tmp_name):
+            os.unlink(tmp_name)
+
+
 def save_json(path: Path, data) -> None:
+    contents = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
+    if path == PRIVATE_FILE:
+        _write_private_text(path, contents)
+        return
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    tmp.write_text(contents, encoding="utf-8")
     tmp.replace(path)
 
 def state() -> dict:
@@ -214,7 +237,12 @@ def gh_token() -> str | None:
                 return token
         except Exception:
             pass
+    if TOKEN_FILE.is_symlink():
+        raise RuntimeError("Refusing to read a GitHub token through a symbolic link.")
     if TOKEN_FILE.exists():
+        if os.name != "nt":
+            TOKEN_FILE.parent.chmod(0o700)
+            TOKEN_FILE.chmod(0o600)
         return TOKEN_FILE.read_text(encoding="utf-8").strip() or None
     return None
 
@@ -281,9 +309,9 @@ def private_package_from_repo(repo: dict, package_id: str) -> dict:
         "platforms": ["all"],
         "architectures": ["all"],
         "source": repo["clone_url"],
-        "action": "smart",
-        "trust": "reviewed",
-        "status": "discovered",
+        "action": "git",
+        "trust": "unreviewed",
+        "status": "repository_only",
         "visibility": "private",
         "repository_id": repo["id"],
         "created_at": repo.get("created_at"),
@@ -366,11 +394,7 @@ def init_github() -> None:
     })
 
     if not command_exists("gh") and token:
-        TOKEN_FILE.write_text(token + "\n", encoding="utf-8")
-        try:
-            TOKEN_FILE.chmod(0o600)
-        except OSError:
-            pass
+        _write_private_text(TOKEN_FILE, token + "\n")
     elif command_exists("gh"):
         try:
             run(["gh", "auth", "setup-git"], check=False)

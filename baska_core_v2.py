@@ -154,50 +154,50 @@ def _dirty_entries(core, path: Path) -> list[str]:
 
 
 def _backup_and_clean(core, path: Path, slug: str) -> Path | None:
+    """Fail closed: do not reset or clean unless every local change is backed up."""
+    import tempfile
+
     _assert_managed_path(core, path, slug)
-    entries = _dirty_entries(core, path)
-    if not entries:
-        return None
-    if not _is_managed(core, path):
-        raise SystemExit(
-            f"{slug} memiliki perubahan lokal di luar direktori terkelola BASKA. "
-            "Commit/stash perubahan Anda dahulu."
-        )
-
-    stamp = time.strftime("%Y%m%d-%H%M%S")
-    backup = core.HOME / "backups" / slug / stamp
-    backup.mkdir(parents=True, exist_ok=True)
-
     try:
-        diff = core.run(["git", "diff", "--binary", "HEAD"], cwd=path, capture=True, check=False).stdout
+        status = core.run(["git", "status", "--porcelain"], cwd=path, capture=True).stdout
+    except Exception as exc:
+        raise SystemExit(f"Gagal memeriksa perubahan lokal; reset dibatalkan: {exc}") from exc
+    if not status.strip():
+        return None
+
+    backup_root = core.HOME / "backups" / slug
+    backup_root.mkdir(parents=True, exist_ok=True)
+    stamp = time.strftime("%Y%m%d-%H%M%S")
+    backup = Path(tempfile.mkdtemp(prefix=stamp + "-", dir=str(backup_root)))
+    try:
+        diff = core.run(["git", "diff", "--binary", "HEAD"], cwd=path, capture=True).stdout
         if diff:
             (backup / "changes.patch").write_text(diff, encoding="utf-8")
-    except Exception:
-        pass
-
-    try:
-        raw = core.run(
+        untracked = core.run(
             ["git", "ls-files", "--others", "--exclude-standard", "-z"],
-            cwd=path,
-            capture=True,
-            check=False,
+            cwd=path, capture=True,
         ).stdout
-        for rel in [x for x in raw.split("\0") if x]:
+        for rel in [name for name in untracked.split("\0") if name]:
             src = path / rel
+            if ".." in Path(rel).parts or Path(rel).is_absolute():
+                raise ValueError(f"Path untracked tidak valid: {rel}")
             dst = backup / "untracked" / rel
-            if src.is_dir():
-                shutil.copytree(src, dst, dirs_exist_ok=True)
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            if src.is_symlink():
+                dst.symlink_to(os.readlink(src))
+            elif src.is_dir():
+                shutil.copytree(src, dst, symlinks=True, dirs_exist_ok=True)
             elif src.exists():
-                dst.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(src, dst)
-    except Exception:
-        pass
+            else:
+                raise FileNotFoundError(src)
+    except Exception as exc:
+        raise SystemExit(f"Backup tidak lengkap; perubahan lokal DIPERTAHANKAN. Detail: {exc}") from exc
 
     core.run(["git", "reset", "--hard", "HEAD"], cwd=path)
     core.run(["git", "clean", "-fd"], cwd=path)
-    print(core.color("yellow", f"Perubahan sisa instalasi dipulihkan. Backup: {backup}"))
+    print(core.color("yellow", f"Perubahan lokal diamankan sebelum reset. Backup: {backup}"))
     return backup
-
 
 def _shell_interpreter(path: Path) -> tuple[str, list[str]]:
     try:
@@ -362,10 +362,14 @@ def _run_smart_install(core, package: dict, path: Path, assume_yes: bool = False
     for i, item in enumerate(plan, 1):
         print(f"  {i}. {item['description']}")
 
-    trust = package.get("trust", "reviewed")
-    allowed = assume_yes or trust == "trusted"
+    trust = package.get("trust", "unreviewed")
+    if trust not in {"reviewed", "trusted"} or package.get("status") == "repository_only":
+        print(core.color("yellow", "Installer tidak dieksekusi: sumber belum disetujui; clone tetap tersedia."))
+        return
+    # --yes is only sufficient for a trusted, explicitly allowlisted package.
+    allowed = trust == "trusted" and assume_yes
     if not allowed:
-        allowed = core.confirm("Lanjutkan instalasi?")
+        allowed = core.confirm("Jalankan installer dari repository ini?")
     if not allowed:
         print("Installer dilewati. Repository tetap tersedia sebagai managed clone.")
         return
@@ -389,6 +393,9 @@ def _run_smart_install(core, package: dict, path: Path, assume_yes: bool = False
 
 
 def _execute_recipe(core, package: dict, path: Path, assume_yes: bool = False) -> None:
+    import hashlib
+    import tempfile
+
     recipe = package.get("recipe")
     if not recipe:
         action = package.get("action", "")
@@ -396,27 +403,59 @@ def _execute_recipe(core, package: dict, path: Path, assume_yes: bool = False) -
             recipe = action.split(":", 1)[1]
     if not recipe:
         return
-    tmp = core.CACHE / f"recipe-{package['id']}.sh"
-    core.download(f"{core.RAW_BASE}/{recipe}", tmp)
-    tmp.chmod(0o700)
-    env = os.environ.copy()
-    env.update({
-        "BASKA_PACKAGE_ID": str(package["id"]),
-        "BASKA_PACKAGE_SLUG": package["slug"],
-        "BASKA_PACKAGE_SOURCE": package["source"],
-        "BASKA_PACKAGE_HOME": str(path),
-        "BASKA_ASSUME_YES": "1" if assume_yes else "0",
-    })
-    try:
-        core.run(["sh", str(tmp)], env=env)
-    except subprocess.CalledProcessError as exc:
-        raise SystemExit(f"Recipe gagal (exit {exc.returncode}): {recipe}") from None
 
+    if not re.fullmatch(r"recipes/(?:[a-zA-Z0-9_-]+/)*[a-zA-Z0-9_-]+\.sh", recipe):
+        raise SystemExit("Recipe tidak valid: hanya path aman di recipes/*.sh yang diterima.")
+    trust = package.get("trust", "unreviewed")
+    if trust not in {"reviewed", "trusted"} or package.get("status") == "repository_only":
+        raise SystemExit("Recipe diblokir: paket belum disetujui untuk eksekusi.")
+    print(f"Recipe: {recipe} | Source: {core.RAW_BASE}/{recipe}")
+    if not (trust == "trusted" and assume_yes) and not core.confirm("Unduh dan jalankan recipe ini?"):
+        print("Recipe dilewati; repository tetap tersedia.")
+        return
+
+    core.CACHE.mkdir(parents=True, exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(prefix="baska-recipe-", suffix=".sh", dir=str(core.CACHE))
+    os.close(fd)
+    tmp = Path(tmp_name)
+    try:
+        core.download(f"{core.RAW_BASE}/{recipe}", tmp)
+        expected = package.get("recipe_sha256")
+        if expected:
+            actual = hashlib.sha256(tmp.read_bytes()).hexdigest()
+            if actual.lower() != str(expected).lower():
+                raise SystemExit("Checksum recipe tidak cocok; eksekusi dibatalkan.")
+        tmp.chmod(0o700)
+        env = os.environ.copy()
+        env.update({
+            "BASKA_PACKAGE_ID": str(package["id"]),
+            "BASKA_PACKAGE_SLUG": package["slug"],
+            "BASKA_PACKAGE_SOURCE": package["source"],
+            "BASKA_PACKAGE_HOME": str(path),
+            "BASKA_ASSUME_YES": "1" if assume_yes else "0",
+        })
+        try:
+            core.run(["sh", str(tmp)], env=env)
+        except subprocess.CalledProcessError as exc:
+            raise SystemExit(f"Recipe gagal (exit {exc.returncode}): {recipe}") from None
+    finally:
+        tmp.unlink(missing_ok=True)
 
 def _compatible(core, package: dict) -> bool:
     supported = set(package.get("platforms") or ["all"])
     current = core.detect_platform()
     return "all" in supported or current in supported
+
+
+def _validate_repo_source(package: dict) -> None:
+    from urllib.parse import urlsplit
+
+    parsed = urlsplit(str(package.get("source") or ""))
+    if (parsed.scheme != "https" or parsed.hostname != "github.com"
+            or parsed.username or parsed.password or parsed.port
+            or parsed.query or parsed.fragment
+            or not re.fullmatch(r"/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\.git", parsed.path)):
+        raise SystemExit("Sumber repository tidak aman; hanya GitHub HTTPS clone URL yang didukung.")
 
 
 def _install_command(core, target: str, assume_yes: bool = False) -> None:
@@ -438,6 +477,7 @@ def _install_command(core, target: str, assume_yes: bool = False) -> None:
         core.record_install(package, None, None, requested_ref)
         return
 
+    _validate_repo_source(package)
     target_path = core.PACKAGES / package["slug"]
     _assert_managed_path(core, target_path, package["slug"])
     if target_path.exists() and (target_path / ".git").exists():

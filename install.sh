@@ -74,6 +74,13 @@ install_linux() {
 }
 
 ensure_python
+# Python 3.10+ is a hard dependency even when python3 already exists.
+python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)' ||
+  fail "Python 3.10+ diperlukan; versi python3 saat ini terlalu lama."
+
+if ! command -v git >/dev/null 2>&1; then
+  say "INFO: Git belum tersedia. BASKA CLI tetap dapat dipasang, tetapi install/update repository memerlukan Git."
+fi
 
 say "BASKA Hub Installer"
 say "=============================="

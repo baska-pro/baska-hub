@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -46,16 +47,29 @@ def main() -> None:
             checked += 1
             continue
 
+        source = str(p.get("source") or "")
+        if not re.fullmatch(r"https://github\.com/[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+\.git", source):
+            fail(f"unsafe repository clone URL for {slug}")
         action = str(p.get("action") or "git")
         recipe = p.get("recipe")
         if action.startswith("recipe:"):
             recipe = action.split(":", 1)[1]
+            if not re.fullmatch(r"recipes/(?:[A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+\.sh", recipe):
+                fail(f"unsafe recipe path for {slug}: {recipe}")
             if not (ROOT / recipe).is_file():
                 fail(f"missing recipe for {slug}: {recipe}")
+            digest = str(p.get("recipe_sha256") or "")
+            if not re.fullmatch(r"[a-f0-9]{64}", digest):
+                fail(f"missing valid SHA-256 pin for recipe {slug}")
+            actual = hashlib.sha256((ROOT / recipe).read_bytes()).hexdigest()
+            if digest != actual:
+                fail(f"recipe integrity mismatch for {slug}")
         elif action not in ALLOWED_ACTIONS:
             fail(f"unknown action for {slug}: {action}")
 
         status = p.get("status")
+        if (action == "smart" or recipe) and (p.get("trust") not in {"reviewed", "trusted"} or status == "repository_only"):
+            fail(f"installer without explicit trust policy: {slug}")
         if status == "ready" and action == "git":
             fail(f"{slug} marked ready but only has git action")
 

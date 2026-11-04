@@ -984,7 +984,7 @@
         "all"
       ],
       "source": "https://github.com/baska-pro/siskamling-digital.git",
-      "action": "smart",
+      "action": "git",
       "recipe": null,
       "sha256": null,
       "description": "Digital neighborhood security and patrol management PWA with FastAPI, attendance, GPS patrols, chat, SOS, Web Push, reports, backups and administration.",
@@ -1105,7 +1105,8 @@
       },
       "preferred_delivery": "release",
       "homepage": null,
-      "archived": false
+      "archived": false,
+      "recipe_sha256": "b7567b88ba0cf9cb4b466b7cb2492dd715b1792c942e2c5c2cc8d189bf171f91"
     },
     {
       "id": "49991",
@@ -1177,7 +1178,8 @@
       },
       "preferred_delivery": "release",
       "homepage": null,
-      "archived": false
+      "archived": false,
+      "recipe_sha256": "b7567b88ba0cf9cb4b466b7cb2492dd715b1792c942e2c5c2cc8d189bf171f91"
     },
     {
       "id": "49990",
@@ -1251,7 +1253,8 @@
       },
       "preferred_delivery": "git",
       "homepage": null,
-      "archived": false
+      "archived": false,
+      "recipe_sha256": "232efabadcd326caa84d6840bae9e5823b192e19f1a625243961fc24fb860d39"
     },
     {
       "id": "49989",
@@ -1270,7 +1273,7 @@
         "all"
       ],
       "source": "https://github.com/baska-pro/windows-shortcut-control.git",
-      "action": "smart",
+      "action": "git",
       "recipe": null,
       "sha256": null,
       "description": "Portable PowerShell/WPF productivity launcher and Windows control center for shortcuts, system tools, monitoring, backup, and automation.",
