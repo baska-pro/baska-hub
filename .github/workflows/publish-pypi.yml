@@ -27,7 +27,7 @@ jobs:
         env:
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
-          git fetch origin main --depth=1
+          git fetch origin main
           git merge-base --is-ancestor HEAD origin/main || {
             echo "::error::Release tag must point to a commit on main"; exit 1;
           }
