@@ -3,7 +3,7 @@
   "owner": "baska-pro",
   "hub_repository_id": 1358699949,
   "public_id_anchor": 50000,
-  "next_public_id": 50008,
+  "next_public_id": 50009,
   "repositories": {
     "1354456051": {
       "package_id": "50000",
@@ -104,6 +104,11 @@
       "package_id": "50007",
       "full_name": "baska-pro/sendtocom",
       "created_at": "2026-10-19T08:44:14Z"
+    },
+    "1463813853": {
+      "package_id": "50008",
+      "full_name": "baska-pro/plat",
+      "created_at": "2026-11-19T07:32:57Z"
     }
   }
 }
